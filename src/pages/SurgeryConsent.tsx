@@ -24,7 +24,8 @@ type Step = "identity" | "consent-form" | "complete";
 const SurgeryConsent = () => {
   const [currentStep, setCurrentStep] = useState<Step>("identity");
   const [patientInfo, setPatientInfo] = useState<PatientInfo | null>(null);
-  
+  const [patientSignature, setPatientSignature] = useState<string | undefined>();
+  const [guardianSignature, setGuardianSignature] = useState<string | undefined>();
 
   // Dialog states
   const [showSurgeryInfoDialog, setShowSurgeryInfoDialog] = useState(false);
@@ -57,7 +58,9 @@ const SurgeryConsent = () => {
     setCurrentStep("consent-form");
   };
 
-  const handleConsentComplete = () => {
+  const handleConsentComplete = (patientSig?: string, guardianSig?: string) => {
+    setPatientSignature(patientSig);
+    setGuardianSignature(guardianSig);
     setCurrentStep("complete");
   };
 
@@ -98,7 +101,11 @@ const SurgeryConsent = () => {
           )}
 
           {currentStep === "complete" && patientInfo && (
-            <CompletePage patientInfo={patientInfo} />
+            <CompletePage 
+              patientInfo={patientInfo} 
+              patientSignature={patientSignature}
+              guardianSignature={guardianSignature}
+            />
           )}
         </main>
 

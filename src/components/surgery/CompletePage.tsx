@@ -16,12 +16,15 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import type { PatientInfo } from "@/pages/SurgeryConsent";
+import PrintableConsent from "./PrintableConsent";
 
 interface CompletePageProps {
   patientInfo: PatientInfo;
+  patientSignature?: string;
+  guardianSignature?: string;
 }
 
-const CompletePage = ({ patientInfo }: CompletePageProps) => {
+const CompletePage = ({ patientInfo, patientSignature, guardianSignature }: CompletePageProps) => {
   const navigate = useNavigate();
   const [locationGranted, setLocationGranted] = useState(false);
 
@@ -68,7 +71,18 @@ const CompletePage = ({ patientInfo }: CompletePageProps) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 animate-fade-up">
+    <>
+      {/* Print-only content */}
+      <div className="hidden print:block">
+        <PrintableConsent 
+          patientInfo={patientInfo}
+          patientSignature={patientSignature}
+          guardianSignature={guardianSignature}
+        />
+      </div>
+
+      {/* Screen-only content */}
+      <div className="print:hidden max-w-2xl mx-auto space-y-6 animate-fade-up">
       {/* Success Header */}
       <div className="text-center py-8">
         <div className="mx-auto w-20 h-20 rounded-full bg-medical-success/10 flex items-center justify-center mb-6 animate-scale-in">
@@ -199,7 +213,8 @@ const CompletePage = ({ patientInfo }: CompletePageProps) => {
           홈으로 돌아가기
         </Button>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

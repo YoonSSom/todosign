@@ -15,7 +15,7 @@ interface SignatureDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   patientInfo: PatientInfo;
-  onComplete: () => void;
+  onComplete: (patientSignature?: string, guardianSignature?: string) => void;
 }
 
 interface SignaturePadProps {
@@ -160,7 +160,7 @@ const SignatureDialog = ({
       setPhase("guardian");
     } else {
       toast.success("동의서 서명이 완료되었습니다.");
-      onComplete();
+      onComplete(patientSignature || undefined, undefined);
     }
   };
 
@@ -170,7 +170,7 @@ const SignatureDialog = ({
       return;
     }
     toast.success("동의서 서명이 완료되었습니다.");
-    onComplete();
+    onComplete(patientSignature || undefined, guardianSignature || undefined);
   };
 
   return (
