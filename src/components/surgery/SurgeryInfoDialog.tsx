@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
-import { User, Calendar, Users, Stethoscope, Info } from "lucide-react";
+import { User, Calendar, Users, Stethoscope, Info, Hash } from "lucide-react";
 import type { PatientInfo } from "@/pages/SurgeryConsent";
 
 interface SurgeryInfoDialogProps {
@@ -49,17 +49,27 @@ const SurgeryInfoDialog = ({
                 <span className="text-muted-foreground">이름</span>
                 <span className="font-medium">{patientInfo.name}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground flex items-center gap-1">
-                  <Calendar className="w-3 h-3" />
-                  생년월일
-                </span>
-                <span className="font-medium">
-                  {patientInfo.birthDate
-                    ? format(patientInfo.birthDate, "yyyy년 MM월 dd일", { locale: ko })
-                    : "-"}
-                </span>
-              </div>
+              {patientInfo.receptionNumber ? (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground flex items-center gap-1">
+                    <Hash className="w-3 h-3" />
+                    접수번호
+                  </span>
+                  <span className="font-medium font-mono">{patientInfo.receptionNumber}</span>
+                </div>
+              ) : (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground flex items-center gap-1">
+                    <Calendar className="w-3 h-3" />
+                    생년월일
+                  </span>
+                  <span className="font-medium">
+                    {patientInfo.birthDate
+                      ? format(patientInfo.birthDate, "yyyy년 MM월 dd일", { locale: ko })
+                      : "-"}
+                  </span>
+                </div>
+              )}
               {patientInfo.isMinor && patientInfo.guardianName && (
                 <div className="flex justify-between pt-2 border-t border-border">
                   <span className="text-muted-foreground flex items-center gap-1">
