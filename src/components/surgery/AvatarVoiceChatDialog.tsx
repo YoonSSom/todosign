@@ -154,20 +154,20 @@ const AvatarVoiceChatDialog = ({
       {/* Fullscreen Video Dialog */}
       <Dialog open={open && phase !== "intro"} onOpenChange={onOpenChange}>
         <DialogContent className="w-screen h-screen max-w-none m-0 rounded-none flex flex-col">
-          <DialogHeader className="text-center shrink-0 pt-4">
-            <div className="mx-auto w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
-              <Video className="w-6 h-6 text-primary" />
-            </div>
-            <DialogTitle className="text-lg">
-              {(phase === "ready" || phase === "video") && "AI 아바타 수술 설명"}
-              {phase === "understanding" && "이해도 확인"}
-              {phase === "consultation" && "의료진 면담 신청"}
-            </DialogTitle>
-            <DialogDescription>
-              {phase === "understanding" && `${patientName}님, 설명을 이해하셨나요?`}
-              {phase === "consultation" && "의료진과 직접 상담을 신청합니다"}
-            </DialogDescription>
-          </DialogHeader>
+          {phase !== "understanding" && (
+            <DialogHeader className="text-center shrink-0 pt-4">
+              <div className="mx-auto w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                <Video className="w-6 h-6 text-primary" />
+              </div>
+              <DialogTitle className="text-lg">
+                {(phase === "ready" || phase === "video") && "AI 아바타 수술 설명"}
+                {phase === "consultation" && "의료진 면담 신청"}
+              </DialogTitle>
+              <DialogDescription>
+                {phase === "consultation" && "의료진과 직접 상담을 신청합니다"}
+              </DialogDescription>
+            </DialogHeader>
+          )}
 
           {/* Video Element - Always rendered but visibility controlled */}
           {(phase === "ready" || phase === "video") && (
