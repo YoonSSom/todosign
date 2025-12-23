@@ -54,15 +54,14 @@ const AvatarVoiceChatDialog = ({
   }, [open]);
 
   const handleStartIntro = () => {
-    setPhase("ready");
-  };
-
-  const handleStartVideo = () => {
     setPhase("video");
-    if (videoRef.current) {
-      videoRef.current.play();
-      setIsPlaying(true);
-    }
+    // Use setTimeout to ensure the fullscreen dialog renders first
+    setTimeout(() => {
+      if (videoRef.current) {
+        videoRef.current.play();
+        setIsPlaying(true);
+      }
+    }, 100);
   };
 
   const handlePlayPause = () => {
@@ -189,14 +188,6 @@ const AvatarVoiceChatDialog = ({
                 AI 설명을 끝까지 청취한 후에만 다음 단계로 이동 가능합니다.
               </p>
 
-              {phase === "ready" && (
-                <div className="flex justify-center pb-4">
-                  <Button variant="hero" size="default" onClick={handleStartVideo}>
-                    <Play className="w-4 h-4 mr-2" />
-                    설명 시작하기
-                  </Button>
-                </div>
-              )}
             </div>
           )}
 
