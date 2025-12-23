@@ -116,8 +116,8 @@ const AvatarVoiceChatDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg w-[95vw] max-h-[90vh] overflow-y-auto">
-        <DialogHeader className="text-center">
+      <DialogContent className="w-screen h-screen max-w-none m-0 rounded-none flex flex-col">
+        <DialogHeader className="text-center shrink-0 pt-4">
           <div className="mx-auto w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
             <Video className="w-6 h-6 text-primary" />
           </div>
@@ -134,8 +134,8 @@ const AvatarVoiceChatDialog = ({
 
         {/* Video Element - Always rendered but visibility controlled */}
         {(phase === "ready" || phase === "video") && (
-          <div className="flex flex-col gap-4">
-            <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden">
+          <div className="flex flex-col gap-4 flex-1 overflow-hidden">
+            <div className="relative flex-1 bg-black rounded-lg overflow-hidden">
               <video
                 ref={videoRef}
                 src="/persona.mp4"
@@ -152,7 +152,7 @@ const AvatarVoiceChatDialog = ({
             </p>
 
             {phase === "ready" && (
-              <div className="flex justify-center">
+              <div className="flex justify-center pb-4">
                 <Button variant="hero" size="default" onClick={handleStartVideo}>
                   <Play className="w-4 h-4 mr-2" />
                   대화 시작하기
