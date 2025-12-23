@@ -15,7 +15,7 @@ import type { PatientInfo } from "@/pages/SurgeryConsent";
 
 interface ConsentFormProps {
   patientInfo: PatientInfo;
-  onComplete: () => void;
+  onComplete: (patientSignature?: string, guardianSignature?: string) => void;
 }
 
 type HealthStatus = "yes" | "no" | "unknown";
@@ -129,9 +129,9 @@ const ConsentForm = ({ patientInfo, onComplete }: ConsentFormProps) => {
     setShowSignatureDialog(true);
   };
 
-  const handleSignatureComplete = () => {
+  const handleSignatureComplete = (patientSig?: string, guardianSig?: string) => {
     setShowSignatureDialog(false);
-    onComplete();
+    onComplete(patientSig, guardianSig);
   };
 
   const age = patientInfo.birthDate
