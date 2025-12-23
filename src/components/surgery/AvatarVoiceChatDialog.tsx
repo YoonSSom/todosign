@@ -193,42 +193,46 @@ const AvatarVoiceChatDialog = ({
 
         {/* Understanding Phase */}
         {phase === "understanding" && (
-          <div className="space-y-6 py-4">
-            <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 text-center">
-              <HelpCircle className="w-8 h-8 text-primary mx-auto mb-3" />
-              <p className="text-lg font-medium">
+          <div className="flex-1 flex flex-col justify-center px-6 py-8 max-w-lg mx-auto w-full">
+            <div className="p-8 rounded-2xl bg-primary/5 border border-primary/20 text-center mb-8">
+              <HelpCircle className="w-16 h-16 text-primary mx-auto mb-6" />
+              <h2 className="text-2xl font-bold mb-3">
                 {patientName}님, 수술 설명을 이해하셨나요?
-              </p>
-              <p className="text-sm text-muted-foreground mt-2">
+              </h2>
+              <p className="text-base text-muted-foreground leading-relaxed">
                 이해하지 못하셨다면 의료진 면담을 신청할 수 있습니다
               </p>
             </div>
 
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full"
-              onClick={handleReplay}
-            >
-              <RotateCcw className="w-4 h-4 mr-2" />
-              설명 다시 듣기
-            </Button>
-
-            <div className="flex gap-3">
+            <div className="space-y-4">
               <Button
                 variant="outline"
-                className="flex-1"
-                onClick={() => handleUnderstanding(false)}
+                size="lg"
+                className="w-full text-base py-6"
+                onClick={handleReplay}
               >
-                이해하지 못함
+                <RotateCcw className="w-5 h-5 mr-3" />
+                설명 다시 듣기
               </Button>
-              <Button
-                variant="hero"
-                className="flex-1"
-                onClick={() => handleUnderstanding(true)}
-              >
-                이해함
-              </Button>
+
+              <div className="flex gap-4">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="flex-1 text-base py-6"
+                  onClick={() => handleUnderstanding(false)}
+                >
+                  이해하지 못함
+                </Button>
+                <Button
+                  variant="hero"
+                  size="lg"
+                  className="flex-1 text-base py-6"
+                  onClick={() => handleUnderstanding(true)}
+                >
+                  이해함
+                </Button>
+              </div>
             </div>
           </div>
         )}
