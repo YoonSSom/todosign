@@ -168,17 +168,6 @@ const AvatarVoiceChatDialog = ({
                 autoPlay
               />
 
-              {/* Play/Pause Overlay Button */}
-              <button
-                onClick={handlePlayPause}
-                className="absolute bottom-6 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg hover:bg-primary/90 transition-all"
-              >
-                {isPlaying ? (
-                  <Pause className="w-7 h-7" />
-                ) : (
-                  <Play className="w-7 h-7 ml-1" />
-                )}
-              </button>
             </div>
 
             <p className="text-center text-sm text-muted-foreground py-4">
