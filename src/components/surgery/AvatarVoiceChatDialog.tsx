@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Play, Pause, Video, HelpCircle, Calendar, Clock, MessageSquare } from "lucide-react";
+import { Play, Pause, Video, HelpCircle, Calendar, Clock, MessageSquare, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 
 interface AvatarVoiceChatDialogProps {
@@ -31,6 +31,7 @@ const AvatarVoiceChatDialog = ({
   const [phase, setPhase] = useState<Phase>("video");
   const [isPlaying, setIsPlaying] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   // Consultation form state
   const [consultName, setConsultName] = useState("");
@@ -39,15 +40,42 @@ const AvatarVoiceChatDialog = ({
   const [consultTime, setConsultTime] = useState("");
   const [consultReason, setConsultReason] = useState("");
 
+  // Reset state when dialog opens
+  useEffect(() => {
+    if (open) {
+      setPhase("video");
+      setIsPlaying(false);
+      setVideoEnded(false);
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+      }
+    }
+  }, [open]);
+
   const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
-    // Simulate video completion after 3 seconds
-    if (!isPlaying && !videoEnded) {
-      setTimeout(() => {
-        setVideoEnded(true);
-        setIsPlaying(false);
-        setPhase("understanding");
-      }, 3000);
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const handleVideoEnded = () => {
+    setVideoEnded(true);
+    setIsPlaying(false);
+    setPhase("understanding");
+  };
+
+  const handleReplay = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.play();
+      setIsPlaying(true);
+      setVideoEnded(false);
+      setPhase("video");
     }
   };
 
@@ -98,18 +126,17 @@ const AvatarVoiceChatDialog = ({
         {phase === "video" && (
           <div className="space-y-4 py-4">
             <div className="relative aspect-video bg-muted rounded-xl overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-3">
-                    <Video className="w-10 h-10 text-primary" />
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    {isPlaying ? "영상 재생 중..." : "AI 아바타 수술 설명 영상"}
-                  </p>
-                </div>
-              </div>
+              <video
+                ref={videoRef}
+                src="/persona.mp4"
+                className="w-full h-full object-cover"
+                onEnded={handleVideoEnded}
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                playsInline
+              />
 
-              {/* Play/Pause Button */}
+              {/* Play/Pause Overlay Button */}
               <button
                 onClick={handlePlayPause}
                 className="absolute bottom-4 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg hover:bg-primary/90 transition-all"
@@ -140,6 +167,16 @@ const AvatarVoiceChatDialog = ({
                 이해하지 못하셨다면 의료진 면담을 신청할 수 있습니다
               </p>
             </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full"
+              onClick={handleReplay}
+            >
+              <RotateCcw className="w-4 h-4 mr-2" />
+              영상 다시 보기
+            </Button>
 
             <div className="flex gap-3">
               <Button
