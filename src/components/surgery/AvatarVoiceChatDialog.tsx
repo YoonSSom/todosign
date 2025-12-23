@@ -113,12 +113,12 @@ const AvatarVoiceChatDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-screen h-screen max-w-none m-0 rounded-none flex flex-col">
+      <DialogContent className="max-w-lg w-[95vw] max-h-[90vh] overflow-y-auto">
         <DialogHeader className="text-center">
-          <div className="mx-auto w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-            <Video className="w-8 h-8 text-primary" />
+          <div className="mx-auto w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+            <Video className="w-6 h-6 text-primary" />
           </div>
-          <DialogTitle className="text-xl">
+          <DialogTitle className="text-lg">
             {(phase === "ready" || phase === "video") && "AI 아바타 수술 설명"}
             {phase === "understanding" && "이해도 확인"}
             {phase === "consultation" && "의료진 면담 신청"}
@@ -131,8 +131,8 @@ const AvatarVoiceChatDialog = ({
 
         {/* Video Element - Always rendered but visibility controlled */}
         {(phase === "ready" || phase === "video") && (
-          <div className="flex-1 flex flex-col min-h-0">
-            <div className={`relative ${phase === "ready" ? "w-full max-w-md mx-auto aspect-video" : "flex-1"} bg-black rounded-xl overflow-hidden`}>
+          <div className="flex flex-col gap-4">
+            <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden">
               <video
                 ref={videoRef}
                 src="/persona.mp4"
@@ -144,14 +144,14 @@ const AvatarVoiceChatDialog = ({
               />
             </div>
 
-            <p className="text-center text-sm text-muted-foreground py-4">
+            <p className="text-center text-xs text-muted-foreground">
               AI 설명을 끝까지 청취한 후에만 다음 단계로 이동 가능합니다.
             </p>
 
             {phase === "ready" && (
-              <div className="flex justify-center pb-4">
-                <Button variant="hero" size="lg" onClick={handleStartVideo}>
-                  <Play className="w-5 h-5 mr-2" />
+              <div className="flex justify-center">
+                <Button variant="hero" size="default" onClick={handleStartVideo}>
+                  <Play className="w-4 h-4 mr-2" />
                   대화 시작하기
                 </Button>
               </div>
