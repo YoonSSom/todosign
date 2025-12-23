@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Play, Pause, Video, HelpCircle, Calendar, Clock, MessageSquare, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
+import avatarDoctor from "@/assets/avatar-doctor.png";
 
 interface AvatarVoiceChatDialogProps {
   open: boolean;
@@ -20,7 +21,7 @@ interface AvatarVoiceChatDialogProps {
   onComplete: () => void;
 }
 
-type Phase = "ready" | "video" | "understanding" | "consultation";
+type Phase = "intro" | "ready" | "video" | "understanding" | "consultation";
 
 const AvatarVoiceChatDialog = ({
   open,
@@ -28,7 +29,7 @@ const AvatarVoiceChatDialog = ({
   patientName,
   onComplete,
 }: AvatarVoiceChatDialogProps) => {
-  const [phase, setPhase] = useState<Phase>("ready");
+  const [phase, setPhase] = useState<Phase>("intro");
   const [isPlaying, setIsPlaying] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -43,7 +44,7 @@ const AvatarVoiceChatDialog = ({
   // Reset state when dialog opens
   useEffect(() => {
     if (open) {
-      setPhase("ready");
+      setPhase("intro");
       setIsPlaying(false);
       setVideoEnded(false);
       if (videoRef.current) {
@@ -51,6 +52,10 @@ const AvatarVoiceChatDialog = ({
       }
     }
   }, [open]);
+
+  const handleStartIntro = () => {
+    setPhase("ready");
+  };
 
   const handleStartVideo = () => {
     setPhase("video");
@@ -115,52 +120,85 @@ const AvatarVoiceChatDialog = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-screen h-screen max-w-none m-0 rounded-none flex flex-col">
-        <DialogHeader className="text-center shrink-0 pt-4">
-          <div className="mx-auto w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
-            <Video className="w-6 h-6 text-primary" />
-          </div>
-          <DialogTitle className="text-lg">
-            {(phase === "ready" || phase === "video") && "AI 아바타 수술 설명"}
-            {phase === "understanding" && "이해도 확인"}
-            {phase === "consultation" && "의료진 면담 신청"}
-          </DialogTitle>
-          <DialogDescription>
-            {phase === "understanding" && `${patientName}님, 설명을 이해하셨나요?`}
-            {phase === "consultation" && "의료진과 직접 상담을 신청합니다"}
-          </DialogDescription>
-        </DialogHeader>
-
-        {/* Video Element - Always rendered but visibility controlled */}
-        {(phase === "ready" || phase === "video") && (
-          <div className="flex flex-col gap-4 flex-1 overflow-hidden">
-            <div className="relative flex-1 bg-black rounded-lg overflow-hidden">
-              <video
-                ref={videoRef}
-                src="/persona.mp4"
-                className="w-full h-full object-contain"
-                onEnded={handleVideoEnded}
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-                playsInline
+    <>
+      {/* Intro Popup */}
+      <Dialog open={open && phase === "intro"} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="text-center">
+            <DialogTitle className="text-lg">AI 아바타 수술 설명</DialogTitle>
+            <DialogDescription>
+              AI 아바타가 수술에 대해 자세히 설명해 드립니다
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="flex flex-col items-center gap-6 py-4">
+            <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-primary/20 shadow-lg">
+              <img 
+                src={avatarDoctor} 
+                alt="AI 아바타 의사" 
+                className="w-full h-full object-cover"
               />
             </div>
-
-            <p className="text-center text-xs text-muted-foreground">
-              AI 설명을 끝까지 청취한 후에만 다음 단계로 이동 가능합니다.
+            
+            <p className="text-center text-sm text-muted-foreground">
+              {patientName}님의 수술에 대해<br />AI 아바타가 상세히 안내해 드리겠습니다.
             </p>
-
-            {phase === "ready" && (
-              <div className="flex justify-center pb-4">
-                <Button variant="hero" size="default" onClick={handleStartVideo}>
-                  <Play className="w-4 h-4 mr-2" />
-                  대화 시작하기
-                </Button>
-              </div>
-            )}
+            
+            <Button variant="hero" size="lg" onClick={handleStartIntro} className="w-full">
+              <Play className="w-4 h-4 mr-2" />
+              대화 시작하기
+            </Button>
           </div>
-        )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Fullscreen Video Dialog */}
+      <Dialog open={open && phase !== "intro"} onOpenChange={onOpenChange}>
+        <DialogContent className="w-screen h-screen max-w-none m-0 rounded-none flex flex-col">
+          <DialogHeader className="text-center shrink-0 pt-4">
+            <div className="mx-auto w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+              <Video className="w-6 h-6 text-primary" />
+            </div>
+            <DialogTitle className="text-lg">
+              {(phase === "ready" || phase === "video") && "AI 아바타 수술 설명"}
+              {phase === "understanding" && "이해도 확인"}
+              {phase === "consultation" && "의료진 면담 신청"}
+            </DialogTitle>
+            <DialogDescription>
+              {phase === "understanding" && `${patientName}님, 설명을 이해하셨나요?`}
+              {phase === "consultation" && "의료진과 직접 상담을 신청합니다"}
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* Video Element - Always rendered but visibility controlled */}
+          {(phase === "ready" || phase === "video") && (
+            <div className="flex flex-col gap-4 flex-1 overflow-hidden">
+              <div className="relative flex-1 bg-black rounded-lg overflow-hidden">
+                <video
+                  ref={videoRef}
+                  src="/persona.mp4"
+                  className="w-full h-full object-contain"
+                  onEnded={handleVideoEnded}
+                  onPlay={() => setIsPlaying(true)}
+                  onPause={() => setIsPlaying(false)}
+                  playsInline
+                />
+              </div>
+
+              <p className="text-center text-xs text-muted-foreground">
+                AI 설명을 끝까지 청취한 후에만 다음 단계로 이동 가능합니다.
+              </p>
+
+              {phase === "ready" && (
+                <div className="flex justify-center pb-4">
+                  <Button variant="hero" size="default" onClick={handleStartVideo}>
+                    <Play className="w-4 h-4 mr-2" />
+                    설명 시작하기
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
 
         {/* Understanding Phase */}
         {phase === "understanding" && (
@@ -290,8 +328,9 @@ const AvatarVoiceChatDialog = ({
             </div>
           </div>
         )}
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
