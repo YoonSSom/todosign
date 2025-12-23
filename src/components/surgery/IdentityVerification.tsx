@@ -158,12 +158,13 @@ const IdentityVerification = ({ onVerified }: IdentityVerificationProps) => {
 
     toast.success("본인확인이 완료되었습니다.");
     
-    // For reception verification, we use default values for optional fields
+    // For reception verification, include reception number
     onVerified({
       name: receptionName,
       birthDate: null,
       phone: "",
       isMinor: false,
+      receptionNumber: receptionNumber,
     });
   };
 

@@ -190,6 +190,12 @@ const ConsentForm = ({ patientInfo, onComplete }: ConsentFormProps) => {
               <Input value={patientInfo.name} disabled className="bg-muted" />
             </div>
           </div>
+          {patientInfo.receptionNumber && (
+            <div className="space-y-2">
+              <Label>접수번호</Label>
+              <Input value={patientInfo.receptionNumber} disabled className="bg-muted font-mono" />
+            </div>
+          )}
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label>생년월일</Label>
