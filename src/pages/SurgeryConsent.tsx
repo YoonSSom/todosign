@@ -16,6 +16,7 @@ export interface PatientInfo {
   isMinor: boolean;
   guardianName?: string;
   guardianPhone?: string;
+  receptionNumber?: string;
 }
 
 
