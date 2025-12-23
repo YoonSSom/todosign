@@ -105,7 +105,7 @@ const AvatarVoiceChatDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-screen h-screen max-w-none m-0 rounded-none flex flex-col">
         <DialogHeader className="text-center">
           <div className="mx-auto w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
             <Video className="w-8 h-8 text-primary" />
@@ -124,12 +124,12 @@ const AvatarVoiceChatDialog = ({
 
         {/* Video Phase */}
         {phase === "video" && (
-          <div className="space-y-4 py-4">
-            <div className="relative aspect-video bg-muted rounded-xl overflow-hidden">
+          <div className="flex-1 flex flex-col min-h-0">
+            <div className="relative flex-1 bg-black rounded-xl overflow-hidden">
               <video
                 ref={videoRef}
                 src="/persona.mp4"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
                 onEnded={handleVideoEnded}
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
@@ -139,17 +139,17 @@ const AvatarVoiceChatDialog = ({
               {/* Play/Pause Overlay Button */}
               <button
                 onClick={handlePlayPause}
-                className="absolute bottom-4 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg hover:bg-primary/90 transition-all"
+                className="absolute bottom-6 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg hover:bg-primary/90 transition-all"
               >
                 {isPlaying ? (
-                  <Pause className="w-6 h-6" />
+                  <Pause className="w-7 h-7" />
                 ) : (
-                  <Play className="w-6 h-6 ml-1" />
+                  <Play className="w-7 h-7 ml-1" />
                 )}
               </button>
             </div>
 
-            <p className="text-center text-sm text-muted-foreground">
+            <p className="text-center text-sm text-muted-foreground py-4">
               영상을 끝까지 시청해주세요. 영상이 완료되면 다음 단계로 진행됩니다.
             </p>
           </div>
