@@ -129,34 +129,10 @@ const AvatarVoiceChatDialog = ({
           </DialogDescription>
         </DialogHeader>
 
-        {/* Ready Phase - Start Button */}
-        {phase === "ready" && (
-          <div className="flex-1 flex flex-col items-center justify-center min-h-0">
-            <div className="relative w-full max-w-md aspect-video bg-black rounded-xl overflow-hidden mb-6">
-              <video
-                ref={videoRef}
-                src="/persona.mp4"
-                className="w-full h-full object-contain"
-                onEnded={handleVideoEnded}
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-                playsInline
-              />
-            </div>
-            <p className="text-center text-sm text-muted-foreground mb-6">
-              AI 설명을 끝까지 청취한 후에만 다음 단계로 이동 가능합니다.
-            </p>
-            <Button variant="hero" size="lg" onClick={handleStartVideo}>
-              <Play className="w-5 h-5 mr-2" />
-              대화 시작하기
-            </Button>
-          </div>
-        )}
-
-        {/* Video Phase */}
-        {phase === "video" && (
+        {/* Video Element - Always rendered but visibility controlled */}
+        {(phase === "ready" || phase === "video") && (
           <div className="flex-1 flex flex-col min-h-0">
-            <div className="relative flex-1 bg-black rounded-xl overflow-hidden">
+            <div className={`relative ${phase === "ready" ? "w-full max-w-md mx-auto aspect-video" : "flex-1"} bg-black rounded-xl overflow-hidden`}>
               <video
                 ref={videoRef}
                 src="/persona.mp4"
@@ -165,14 +141,21 @@ const AvatarVoiceChatDialog = ({
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
                 playsInline
-                autoPlay
               />
-
             </div>
 
             <p className="text-center text-sm text-muted-foreground py-4">
               AI 설명을 끝까지 청취한 후에만 다음 단계로 이동 가능합니다.
             </p>
+
+            {phase === "ready" && (
+              <div className="flex justify-center pb-4">
+                <Button variant="hero" size="lg" onClick={handleStartVideo}>
+                  <Play className="w-5 h-5 mr-2" />
+                  대화 시작하기
+                </Button>
+              </div>
+            )}
           </div>
         )}
 
