@@ -11,11 +11,10 @@ import { FileText, User, Stethoscope, Heart, ClipboardCheck, PenLine } from "luc
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import SignatureDialog from "./SignatureDialog";
-import type { PatientInfo, SurgeryInfo } from "@/pages/SurgeryConsent";
+import type { PatientInfo } from "@/pages/SurgeryConsent";
 
 interface ConsentFormProps {
   patientInfo: PatientInfo;
-  surgeryInfo: SurgeryInfo;
   onComplete: () => void;
 }
 
@@ -27,7 +26,7 @@ interface HealthItem {
   value: HealthStatus;
 }
 
-const ConsentForm = ({ patientInfo, surgeryInfo, onComplete }: ConsentFormProps) => {
+const ConsentForm = ({ patientInfo, onComplete }: ConsentFormProps) => {
   // Form state
   const [registrationNumber, setRegistrationNumber] = useState("");
   const [surgeryName, setSurgeryName] = useState("");
@@ -202,7 +201,7 @@ const ConsentForm = ({ patientInfo, surgeryInfo, onComplete }: ConsentFormProps)
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>진단명</Label>
-              <Input value={surgeryInfo.diagnosis} disabled className="bg-muted font-medium" />
+              <Input value="자궁내막암" disabled className="bg-muted font-medium" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="surgeryName">수술명</Label>
