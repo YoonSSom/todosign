@@ -78,13 +78,16 @@ const AvatarVoiceChatDialog = ({
   };
 
   const handleReplay = () => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = 0;
-      videoRef.current.play();
-      setIsPlaying(true);
-      setVideoEnded(false);
-      setPhase("video");
-    }
+    setPhase("video");
+    setVideoEnded(false);
+    // Use setTimeout to ensure state update happens before playing
+    setTimeout(() => {
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+        videoRef.current.play();
+        setIsPlaying(true);
+      }
+    }, 50);
   };
 
   const handleUnderstanding = (understood: boolean) => {
@@ -179,7 +182,7 @@ const AvatarVoiceChatDialog = ({
               onClick={handleReplay}
             >
               <RotateCcw className="w-4 h-4 mr-2" />
-              영상 다시 보기
+              설명 다시 듣기
             </Button>
 
             <div className="flex gap-3">
