@@ -192,9 +192,9 @@ const SignatureDialog = ({
 
         <div className="py-4">
           {phase === "patient" ? (
-            <SignaturePad onSignatureChange={setPatientSignature} />
+            <SignaturePad key="patient" onSignatureChange={setPatientSignature} />
           ) : (
-            <SignaturePad onSignatureChange={setGuardianSignature} />
+            <SignaturePad key="guardian" onSignatureChange={setGuardianSignature} />
           )}
         </div>
 
