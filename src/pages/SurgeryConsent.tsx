@@ -18,16 +18,13 @@ export interface PatientInfo {
   guardianPhone?: string;
 }
 
-export interface SurgeryInfo {
-  diagnosis: string;
-}
 
 type Step = "identity" | "consent-form" | "complete";
 
 const SurgeryConsent = () => {
   const [currentStep, setCurrentStep] = useState<Step>("identity");
   const [patientInfo, setPatientInfo] = useState<PatientInfo | null>(null);
-  const [surgeryInfo, setSurgeryInfo] = useState<SurgeryInfo | null>(null);
+  
 
   // Dialog states
   const [showSurgeryInfoDialog, setShowSurgeryInfoDialog] = useState(false);
@@ -40,8 +37,7 @@ const SurgeryConsent = () => {
     setShowSurgeryInfoDialog(true);
   };
 
-  const handleSurgeryInfoConfirmed = (info: SurgeryInfo) => {
-    setSurgeryInfo(info);
+  const handleSurgeryInfoConfirmed = () => {
     setShowSurgeryInfoDialog(false);
     setShowFaceRecognitionDialog(true);
   };
@@ -94,10 +90,9 @@ const SurgeryConsent = () => {
             <IdentityVerification onVerified={handleIdentityVerified} />
           )}
 
-          {currentStep === "consent-form" && patientInfo && surgeryInfo && (
+          {currentStep === "consent-form" && patientInfo && (
             <ConsentForm 
               patientInfo={patientInfo} 
-              surgeryInfo={surgeryInfo}
               onComplete={handleConsentComplete} 
             />
           )}

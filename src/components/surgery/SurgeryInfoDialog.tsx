@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,19 +6,16 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
-import { User, Calendar, Users, Stethoscope } from "lucide-react";
-import { toast } from "sonner";
-import type { PatientInfo, SurgeryInfo } from "@/pages/SurgeryConsent";
+import { User, Calendar, Users, Stethoscope, Info } from "lucide-react";
+import type { PatientInfo } from "@/pages/SurgeryConsent";
 
 interface SurgeryInfoDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   patientInfo: PatientInfo;
-  onConfirm: (info: SurgeryInfo) => void;
+  onConfirm: () => void;
 }
 
 const SurgeryInfoDialog = ({
@@ -28,27 +24,20 @@ const SurgeryInfoDialog = ({
   patientInfo,
   onConfirm,
 }: SurgeryInfoDialogProps) => {
-  const [diagnosis, setDiagnosis] = useState("");
-
-  const handleConfirm = () => {
-    if (!diagnosis.trim()) {
-      toast.error("진단명을 입력해주세요.");
-      return;
-    }
-    onConfirm({ diagnosis });
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-xl">수술 정보 확인</DialogTitle>
+        <DialogHeader className="text-center">
+          <div className="mx-auto w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+            <Info className="w-8 h-8 text-primary" />
+          </div>
+          <DialogTitle className="text-xl">수술 정보 안내</DialogTitle>
           <DialogDescription>
             환자 정보와 예정 수술 정보를 확인해주세요
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6 py-4">
+        <div className="space-y-4 py-4">
           {/* Patient Info Display */}
           <div className="space-y-3 p-4 rounded-xl bg-muted/50">
             <h4 className="font-semibold text-foreground flex items-center gap-2">
@@ -83,35 +72,32 @@ const SurgeryInfoDialog = ({
             </div>
           </div>
 
-          {/* Diagnosis Input */}
-          <div className="space-y-3">
-            <Label htmlFor="diagnosis" className="flex items-center gap-2 text-base font-semibold">
+          {/* Surgery Info Display */}
+          <div className="space-y-3 p-4 rounded-xl bg-primary/5 border border-primary/20">
+            <h4 className="font-semibold text-foreground flex items-center gap-2">
               <Stethoscope className="w-4 h-4 text-primary" />
               예정 수술 정보
-            </Label>
-            <div className="p-4 rounded-xl border-2 border-primary/30 bg-primary/5">
-              <Label htmlFor="diagnosis" className="text-sm text-muted-foreground">
-                진단명
-              </Label>
-              <Input
-                id="diagnosis"
-                placeholder="예: 자궁내막암"
-                value={diagnosis}
-                onChange={(e) => setDiagnosis(e.target.value)}
-                className="mt-2 h-12 text-lg font-medium border-primary/20 focus:border-primary"
-              />
+            </h4>
+            <div className="grid gap-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">진단명</span>
+                <span className="font-medium">자궁내막암</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">수술명</span>
+                <span className="font-medium">복강경하 전자궁절제술</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">담당의</span>
+                <span className="font-medium">김OO 교수</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="flex justify-end gap-3">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            취소
-          </Button>
-          <Button variant="hero" onClick={handleConfirm}>
-            확인 및 다음 단계
-          </Button>
-        </div>
+        <Button variant="hero" className="w-full" onClick={onConfirm}>
+          확인
+        </Button>
       </DialogContent>
     </Dialog>
   );
