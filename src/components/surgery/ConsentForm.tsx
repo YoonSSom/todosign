@@ -99,33 +99,59 @@ const ConsentForm = ({ patientInfo, onComplete }: ConsentFormProps) => {
     );
   };
 
-  const validateForm = (): boolean => {
+  const scrollToElement = (elementId: string) => {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+      element.focus();
+    }
+  };
+
+  const scrollToCard = (cardId: string) => {
+    const element = document.getElementById(cardId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
+  const validateForm = (): { valid: boolean; firstInvalidField?: string; isCard?: boolean } => {
     if (!registrationNumber.trim()) {
       toast.error("등록번호를 입력해주세요.");
-      return false;
+      return { valid: false, firstInvalidField: "registrationNumber" };
     }
     if (!surgeryName.trim()) {
       toast.error("수술명을 입력해주세요.");
-      return false;
+      return { valid: false, firstInvalidField: "surgeryName" };
     }
     if (!surgeryMethod) {
       toast.error("수술방법을 선택해주세요.");
-      return false;
+      return { valid: false, firstInvalidField: "surgeryMethodCard", isCard: true };
     }
     if (!surgeryDate) {
       toast.error("시행예정일을 선택해주세요.");
-      return false;
+      return { valid: false, firstInvalidField: "surgeryDate" };
     }
     if (!requiredConsents.explained || !requiredConsents.understood || 
         !requiredConsents.complications || !requiredConsents.cooperation) {
+      const uncheckedConsent = !requiredConsents.explained ? "explained" :
+        !requiredConsents.understood ? "understood" :
+        !requiredConsents.complications ? "complications" : "cooperation";
       toast.error("필수 동의 항목을 모두 체크해주세요.");
-      return false;
+      return { valid: false, firstInvalidField: uncheckedConsent };
     }
-    return true;
+    return { valid: true };
   };
 
   const handleSubmit = () => {
-    if (!validateForm()) return;
+    const validation = validateForm();
+    if (!validation.valid && validation.firstInvalidField) {
+      if (validation.isCard) {
+        scrollToCard(validation.firstInvalidField);
+      } else {
+        scrollToElement(validation.firstInvalidField);
+      }
+      return;
+    }
     setShowSignatureDialog(true);
   };
 
@@ -214,7 +240,7 @@ const ConsentForm = ({ patientInfo, onComplete }: ConsentFormProps) => {
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div id="surgeryMethodCard" className="space-y-2">
             <Label>수술방법</Label>
             <RadioGroup value={surgeryMethod} onValueChange={setSurgeryMethod} className="flex gap-6">
               {["개복", "복강경", "로봇"].map((method) => (
