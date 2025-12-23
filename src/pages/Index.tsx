@@ -1,13 +1,18 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Helmet } from "react-helmet-async";
+import HeroSection from "@/components/HeroSection";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <>
+      <Helmet>
+        <title>비대면 수술 동의서 전자서명 서비스 | 아산병원</title>
+        <meta 
+          name="description" 
+          content="아산병원 비대면 수술 동의서 전자서명 서비스입니다. 병원을 방문하지 않고도 안전하게 수술 동의서를 작성하고 전자서명을 완료할 수 있습니다." 
+        />
+      </Helmet>
+      <HeroSection />
+    </>
   );
 };
 
