@@ -10,9 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Play, Pause, Video, HelpCircle, Calendar, Clock, MessageSquare, RotateCcw } from "lucide-react";
+import { Play, Pause, Video, HelpCircle, Calendar, Clock, MessageSquare, RotateCcw, Check } from "lucide-react";
 import { toast } from "sonner";
 import avatarDoctor from "@/assets/avatar-doctor.png";
+import avatarNurse from "@/assets/avatar-nurse.png";
 
 interface AvatarVoiceChatDialogProps {
   open: boolean;
@@ -32,6 +33,7 @@ const AvatarVoiceChatDialog = ({
   const [phase, setPhase] = useState<Phase>("intro");
   const [isPlaying, setIsPlaying] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState<"doctor" | "nurse">("doctor");
   const videoRef = useRef<HTMLVideoElement>(null);
 
   // Consultation form state
@@ -122,25 +124,67 @@ const AvatarVoiceChatDialog = ({
     <>
       {/* Intro Popup */}
       <Dialog open={open && phase === "intro"} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader className="text-center">
             <DialogTitle className="text-lg">AI 아바타 수술 설명</DialogTitle>
             <DialogDescription>
-              AI 아바타가 수술에 대해 자세히 설명해 드립니다
+              대화할 AI 아바타를 선택해주세요
             </DialogDescription>
           </DialogHeader>
           
           <div className="flex flex-col items-center gap-6 py-4">
-            <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-primary/20 shadow-lg">
-              <img 
-                src={avatarDoctor} 
-                alt="AI 아바타 의사" 
-                className="w-full h-full object-cover"
-              />
+            <div className="flex gap-6 justify-center">
+              {/* Doctor Avatar */}
+              <button
+                onClick={() => setSelectedAvatar("doctor")}
+                className={`relative flex flex-col items-center gap-3 p-4 rounded-2xl border-2 transition-all ${
+                  selectedAvatar === "doctor" 
+                    ? "border-primary bg-primary/5 shadow-lg" 
+                    : "border-border hover:border-primary/50"
+                }`}
+              >
+                <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-primary/20 shadow-md">
+                  <img 
+                    src={avatarDoctor} 
+                    alt="AI 의사 아바타" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <span className="text-sm font-medium">의사 아바타</span>
+                {selectedAvatar === "doctor" && (
+                  <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                    <Check className="w-4 h-4 text-primary-foreground" />
+                  </div>
+                )}
+              </button>
+
+              {/* Nurse Avatar */}
+              <button
+                onClick={() => setSelectedAvatar("nurse")}
+                className={`relative flex flex-col items-center gap-3 p-4 rounded-2xl border-2 transition-all ${
+                  selectedAvatar === "nurse" 
+                    ? "border-primary bg-primary/5 shadow-lg" 
+                    : "border-border hover:border-primary/50"
+                }`}
+              >
+                <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-primary/20 shadow-md">
+                  <img 
+                    src={avatarNurse} 
+                    alt="AI 간호사 아바타" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <span className="text-sm font-medium">간호사 아바타</span>
+                {selectedAvatar === "nurse" && (
+                  <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                    <Check className="w-4 h-4 text-primary-foreground" />
+                  </div>
+                )}
+              </button>
             </div>
             
             <p className="text-center text-sm text-muted-foreground">
-              {patientName}님의 수술에 대해<br />AI 아바타가 상세히 안내해 드리겠습니다.
+              {patientName}님의 수술에 대해<br />선택하신 AI 아바타가 상세히 안내해 드리겠습니다.
             </p>
             
             <Button variant="hero" size="lg" onClick={handleStartIntro} className="w-full">
