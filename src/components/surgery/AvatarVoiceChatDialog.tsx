@@ -219,7 +219,7 @@ const AvatarVoiceChatDialog = ({
               <div className="relative flex-1 bg-black rounded-lg overflow-hidden">
                 <video
                   ref={videoRef}
-                  src="/persona.mp4"
+                  src={selectedAvatar === "nurse" ? "/persona_W.mp4" : "/persona.mp4"}
                   className="w-full h-full object-contain"
                   onEnded={handleVideoEnded}
                   onPlay={() => setIsPlaying(true)}
