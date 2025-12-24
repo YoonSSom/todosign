@@ -1,13 +1,14 @@
-import { Check, User, FileText } from "lucide-react";
+import { Check, User, FileText, Video } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ProgressIndicatorProps {
-  currentStep: "identity" | "consent-form";
+  currentStep: "identity" | "explanation" | "consent-form";
 }
 
 const ProgressIndicator = ({ currentStep }: ProgressIndicatorProps) => {
   const steps = [
     { id: "identity", label: "본인확인", icon: User },
+    { id: "explanation", label: "설명", icon: Video },
     { id: "consent-form", label: "동의서 작성", icon: FileText },
   ];
 
