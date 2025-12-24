@@ -97,7 +97,17 @@ const AvatarVoiceChatDialog = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState<"doctor" | "nurse">("doctor");
+  const [currentSubtitle, setCurrentSubtitle] = useState("");
+  const [subtitleIndex, setSubtitleIndex] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const subtitleTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 자막 데이터 (시간, 텍스트)
+  const subtitles = [
+    { start: 0, end: 1.5, text: "안녕하세요, 환자분." },
+    { start: 1.5, end: 3.5, text: "저는 오늘 수술에 대해 설명드릴 AI 의료 도우미입니다." },
+    { start: 3.5, end: 5, text: "수술에 관한 중요한 사항을 안내해 드리겠습니다." },
+  ];
 
   // Consultation form state
   const [consultName, setConsultName] = useState("");
@@ -121,12 +131,44 @@ const AvatarVoiceChatDialog = ({
       setPhase("intro");
       setIsPlaying(false);
       setVideoEnded(false);
+      setCurrentSubtitle("");
+      setSubtitleIndex(0);
       if (videoRef.current) {
         videoRef.current.currentTime = 0;
       }
       setSelectedTopics([]);
     }
+    return () => {
+      if (subtitleTimerRef.current) {
+        clearInterval(subtitleTimerRef.current);
+      }
+    };
   }, [open]);
+
+  // 자막 업데이트
+  useEffect(() => {
+    if (isPlaying && videoRef.current) {
+      subtitleTimerRef.current = setInterval(() => {
+        const currentTime = videoRef.current?.currentTime || 0;
+        const subtitle = subtitles.find(
+          (s) => currentTime >= s.start && currentTime < s.end
+        );
+        setCurrentSubtitle(subtitle?.text || "");
+      }, 100);
+    } else {
+      if (subtitleTimerRef.current) {
+        clearInterval(subtitleTimerRef.current);
+      }
+      if (!isPlaying) {
+        setCurrentSubtitle("");
+      }
+    }
+    return () => {
+      if (subtitleTimerRef.current) {
+        clearInterval(subtitleTimerRef.current);
+      }
+    };
+  }, [isPlaying]);
 
   const handleStartIntro = () => {
     setPhase("video");
@@ -380,6 +422,17 @@ const AvatarVoiceChatDialog = ({
                   onPause={() => setIsPlaying(false)}
                   playsInline
                 />
+                
+                {/* 자막 표시 */}
+                {currentSubtitle && (
+                  <div className="absolute bottom-8 left-0 right-0 flex justify-center px-4">
+                    <div className="bg-black/80 text-white px-6 py-3 rounded-lg text-center max-w-[90%]">
+                      <p className="text-base md:text-lg font-medium leading-relaxed">
+                        {currentSubtitle}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <p className="text-center text-xs text-muted-foreground">
