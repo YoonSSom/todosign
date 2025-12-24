@@ -150,7 +150,7 @@ const AvatarVoiceChatDialog = ({
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <span className="text-sm font-medium">의사 아바타</span>
+                <span className="text-sm font-medium">남성</span>
                 {selectedAvatar === "doctor" && (
                   <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
                     <Check className="w-4 h-4 text-primary-foreground" />
@@ -174,7 +174,7 @@ const AvatarVoiceChatDialog = ({
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <span className="text-sm font-medium">간호사 아바타</span>
+                <span className="text-sm font-medium">여성</span>
                 {selectedAvatar === "nurse" && (
                   <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
                     <Check className="w-4 h-4 text-primary-foreground" />
