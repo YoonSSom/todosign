@@ -439,31 +439,29 @@ const AvatarVoiceChatDialog = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-between gap-4">
-                <p className="text-center text-xs text-muted-foreground flex-1">
-                  AI 설명을 끝까지 청취한 후에만 다음 단계로 이동 가능합니다.
-                </p>
+              <div className="flex flex-col items-center gap-4">
                 <Button
-                  variant="outline"
-                  size="sm"
+                  variant="default"
+                  size="lg"
                   onClick={() => {
                     if (videoRef.current) {
-                      videoRef.current.pause();
-                      setIsPlaying(false);
+                      if (isPlaying) {
+                        videoRef.current.pause();
+                        setIsPlaying(false);
+                      } else {
+                        videoRef.current.play();
+                        setIsPlaying(true);
+                      }
                     }
-                    setPhase("ai-voice-chat");
-                    setChatMessages([{
-                      role: 'ai',
-                      content: '안녕하세요. 수술에 관해 궁금하신 점을 말씀해 주세요. 수술 목적, 방법, 위험성, 회복 과정 등 무엇이든 질문하실 수 있습니다.'
-                    }]);
-                    setIsSpeaking(true);
-                    setTimeout(() => setIsSpeaking(false), 3000);
                   }}
-                  className="shrink-0"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg px-8 py-3 text-base font-semibold animate-pulse hover:animate-none"
                 >
-                  <MessageSquare className="w-4 h-4 mr-2" />
-                  질문하기
+                  <MessageSquare className="w-5 h-5 mr-2" />
+                  {isPlaying ? "질문하기 (영상 일시정지)" : "영상 다시 재생"}
                 </Button>
+                <p className="text-center text-xs text-muted-foreground">
+                  AI 설명을 끝까지 청취한 후에만 다음 단계로 이동 가능합니다.
+                </p>
               </div>
 
             </div>
