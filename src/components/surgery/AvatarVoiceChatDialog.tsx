@@ -457,7 +457,7 @@ const AvatarVoiceChatDialog = ({
                   className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg px-8 py-3 text-base font-semibold"
                 >
                   <MessageSquare className="w-5 h-5 mr-2" />
-                  {isPlaying ? "질문하기 (영상 일시정지)" : "영상 다시 재생"}
+                  {isPlaying ? "질문하기" : "대화 질문 완료"}
                 </Button>
                 <p className="text-center text-xs text-muted-foreground">
                   AI 설명을 끝까지 청취한 후에만 다음 단계로 이동 가능합니다.
