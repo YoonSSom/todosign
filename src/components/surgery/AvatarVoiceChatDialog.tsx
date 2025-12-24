@@ -185,8 +185,12 @@ const AvatarVoiceChatDialog = ({
     // Use setTimeout to ensure the fullscreen dialog renders first
     setTimeout(() => {
       if (videoRef.current) {
+        videoRef.current.currentTime = 0;
         videoRef.current.play();
         setIsPlaying(true);
+        // 첫 번째 자막 즉시 표시
+        const firstSubtitle = subtitles.find(s => 0 >= s.start && 0 < s.end);
+        setCurrentSubtitle(firstSubtitle?.text || "");
       }
     }, 100);
   };
