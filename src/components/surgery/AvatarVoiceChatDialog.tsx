@@ -439,9 +439,32 @@ const AvatarVoiceChatDialog = ({
                 </div>
               </div>
 
-              <p className="text-center text-xs text-muted-foreground">
-                AI 설명을 끝까지 청취한 후에만 다음 단계로 이동 가능합니다.
-              </p>
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-center text-xs text-muted-foreground flex-1">
+                  AI 설명을 끝까지 청취한 후에만 다음 단계로 이동 가능합니다.
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    if (videoRef.current) {
+                      videoRef.current.pause();
+                      setIsPlaying(false);
+                    }
+                    setPhase("ai-voice-chat");
+                    setChatMessages([{
+                      role: 'ai',
+                      content: '안녕하세요. 수술에 관해 궁금하신 점을 말씀해 주세요. 수술 목적, 방법, 위험성, 회복 과정 등 무엇이든 질문하실 수 있습니다.'
+                    }]);
+                    setIsSpeaking(true);
+                    setTimeout(() => setIsSpeaking(false), 3000);
+                  }}
+                  className="shrink-0"
+                >
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  질문하기
+                </Button>
+              </div>
 
             </div>
           )}
