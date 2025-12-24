@@ -104,9 +104,11 @@ const AvatarVoiceChatDialog = ({
 
   // 자막 데이터 (시간, 텍스트)
   const subtitles = [
-    { start: 0, end: 1.5, text: "안녕하세요, 환자분." },
-    { start: 1.5, end: 3.5, text: "저는 오늘 수술에 대해 설명드릴 AI 의료 도우미입니다." },
-    { start: 3.5, end: 5, text: "수술에 관한 중요한 사항을 안내해 드리겠습니다." },
+    { start: 0, end: 2, text: "안녕하십니까" },
+    { start: 2, end: 5, text: "귀하께서 받으실 자궁내막암 수술에 대해 설명드리겠습니다." },
+    { start: 5, end: 10, text: "이 대화는 수술 전 충분한 이해를 돕기 위해 진행하는 것이며, 설명을 들은 후 궁금하신 점은 담당 의료진에게 언제든지 문의하실 수 있습니다." },
+    { start: 10, end: 14, text: "지금부터 수술의 목적, 방법, 위험성, 그리고 주의사항을 차례로 설명드리겠습니다." },
+    { start: 14, end: 17, text: "먼저 수술의 목적에 대해 말씀드리겠습니다." },
   ];
 
   // Consultation form state
