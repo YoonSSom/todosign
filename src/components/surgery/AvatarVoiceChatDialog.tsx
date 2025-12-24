@@ -428,15 +428,15 @@ const AvatarVoiceChatDialog = ({
                 />
                 
                 {/* 자막 표시 */}
-                {currentSubtitle && (
-                  <div className="absolute bottom-8 left-0 right-0 flex justify-center px-4">
-                    <div className="bg-black/80 text-white px-6 py-3 rounded-lg text-center max-w-[90%]">
-                      <p className="text-base md:text-lg font-medium leading-relaxed">
-                        {currentSubtitle}
-                      </p>
-                    </div>
+                <div className={`absolute bottom-8 left-0 right-0 flex justify-center px-4 transition-opacity duration-500 ease-in-out ${
+                  currentSubtitle ? 'opacity-100' : 'opacity-0'
+                }`}>
+                  <div className="bg-black/80 text-white px-6 py-3 rounded-lg text-center max-w-[90%]">
+                    <p className="text-base md:text-lg font-medium leading-relaxed">
+                      {currentSubtitle || '\u00A0'}
+                    </p>
                   </div>
-                )}
+                </div>
               </div>
 
               <p className="text-center text-xs text-muted-foreground">
