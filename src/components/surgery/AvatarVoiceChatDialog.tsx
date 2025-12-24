@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Play, Pause, Video, HelpCircle, Calendar, Clock, MessageSquare, RotateCcw, Check, BookOpen, ChevronRight } from "lucide-react";
+import { Play, Pause, Video, HelpCircle, Calendar, Clock, MessageSquare, RotateCcw, Check, BookOpen, ChevronRight, Mic, MicOff, Volume2, UserRound, Headphones } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import avatarDoctor from "@/assets/avatar-doctor.png";
@@ -23,7 +23,30 @@ interface AvatarVoiceChatDialogProps {
   onComplete: () => void;
 }
 
-type Phase = "intro" | "ready" | "video" | "understanding" | "understanding-check" | "understanding-explain" | "understanding-confirm" | "consultation";
+type Phase = "intro" | "ready" | "video" | "understanding" | "understanding-check" | "understanding-explain" | "understanding-confirm" | "consultation-confirm" | "ai-voice-chat" | "consultation";
+
+// 수술동의서 PDF 기반 AI 상담 지식 베이스
+const SURGERY_KNOWLEDGE_BASE = {
+  surgeryPurpose: `자궁내막암의 표준 치료는 자궁절제술(양측 난소/난관 절제술 포함 가능)을 포함한 병기설정 수술입니다. 수술 후 조직병리학적 예후인자를 확인하여 생존율 향상과 재발률 감소를 위해 항암화학요법 및 방사선 치료 등의 시행 여부를 결정하게 됩니다.`,
+  
+  riskFactors: `환자의 나이가 70세 이상, 수술 시간이 길어진 경우, 수술 범위가 큰 경우, 환자의 전신 활동이 제한적인 경우, 영양 상태가 불량한 경우, 만성질환(고혈압, 당뇨, 면역질환 등)이 있는 경우는 수술 이후에 회복이 늦어질 수 있으며, 장기간 중환자실 치료가 필요할 수 있습니다.`,
+  
+  alternativeTreatment: `가임력 보존을 원할 시, 초기 자궁내막암이면서 특정 조직병리학적 조건을 모두 갖춘 경우, 제한적으로 호르몬(프로게스테론) 치료를 시도해 볼 수 있습니다. 환자의 전신상태나 수술에 따른 합병증 발생 위험성이 높은 경우, 전신항암화학요법과 방사선 치료가 있으나 이는 수술을 대체하는 표준 치료가 아니므로 예후가 불량할 수 있습니다.`,
+  
+  withoutSurgery: `적절한 시기에 수술이 진행되지 않을 경우, 암세포로 이루어진 병변의 크기가 증가하고 직접 또는 혈액이나 림프관을 통한 전이 병변이 늘어남으로써, 삶의 질이 떨어지고 사망에 이르게 될 것입니다.`,
+  
+  surgeryMethod: `수술은 수술 전 검사 소견과 환자의 내과적 상태와 과거력을 고려하여 개복, 복강경 혹은 로봇 수술 중에서 시행됩니다. 복강경이나 로봇 수술로 병변을 안전하고 완벽하게 제거하는 것이 어렵다고 판단되는 경우에 개복 수술로 진행하거나 변경될 수 있습니다.`,
+  
+  surgeryScope: `초기 자궁내막암에서는 표준 치료로 골반세척세포검사, 자궁절제술과 양측 난관난소절제술을 시행합니다. 수술 전 검사나 수술 중 육안 소견에 따라 골반과 대동맥주위 림프절절제술을 시행할 수 있습니다.`,
+  
+  surgeryTime: `수술 시간은 수술 범위, 수술실 내 추가 검사, 환자 상태에 따라 차이가 있으나 일반적으로 피부 절개에서 봉합까지 약 2-4시간 정도가 소요됩니다. 병실로 다시 돌아가기까지는 약 6시간 이상이 소요됩니다.`,
+  
+  complications: `주변 장기 손상, 출혈, 운동 및 감각 기능 저하, 수술 부위 통증, 혈전색전증, 하지부종 및 림프낭종, 장폐색, 수술 창상 및 기타 감염, 배뇨장애, 주변 장기와의 누공, 장시간 수술에 따른 합병증 등이 발생할 수 있습니다.`,
+  
+  postSurgeryCare: `수술 직후 숨을 크게 들이 마시고 내쉬는 연습을 통해 무기폐로 인한 발열을 줄일 수 있습니다. 가능한 한 빨리, 많이 걸어야 수술로 인한 장 마비 발생을 줄일 수 있습니다. 수술 후 약 6주간은 골반 내 압력이 많이 올라갈 수 있는 활동이나 운동은 피해야 합니다.`,
+  
+  discharge: `수술 후 퇴원은 환자 상태에 따라 차이가 있으나 대개 1-2주 이내에 하게 됩니다. 수술 후 보조 치료를 시행해야 하는 경우나 조직병리검사 결과를 확인하고 퇴원해야 하는 경우에는 퇴원 일정이 변경될 수도 있습니다.`
+};
 
 // 수술 설명 주제 목록
 const SURGERY_TOPICS = [
@@ -85,6 +108,12 @@ const AvatarVoiceChatDialog = ({
   
   // Understanding check state
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  
+  // AI Voice Chat state
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [chatMessages, setChatMessages] = useState<{role: 'user' | 'ai', content: string}[]>([]);
+  const [currentTranscript, setCurrentTranscript] = useState("");
 
   // Reset state when dialog opens
   useEffect(() => {
@@ -182,8 +211,51 @@ const AvatarVoiceChatDialog = ({
     if (understood) {
       onComplete();
     } else {
-      setPhase("consultation");
+      setPhase("consultation-confirm");
     }
+  };
+
+  const handleConsultationConfirm = (requestConsultation: boolean) => {
+    if (requestConsultation) {
+      setPhase("consultation");
+    } else {
+      // AI 음성 상담 시작
+      setPhase("ai-voice-chat");
+      setChatMessages([{
+        role: 'ai',
+        content: '안녕하세요. 수술에 관해 궁금하신 점을 말씀해 주세요. 수술 목적, 방법, 위험성, 회복 과정 등 무엇이든 질문하실 수 있습니다.'
+      }]);
+      // 시뮬레이션: AI가 처음 인사를 말함
+      setIsSpeaking(true);
+      setTimeout(() => setIsSpeaking(false), 3000);
+    }
+  };
+
+  const handleStartListening = () => {
+    setIsListening(true);
+    // 시뮬레이션: 음성 인식 중
+    setTimeout(() => {
+      setIsListening(false);
+      const userQuestion = "수술 후 회복 기간은 얼마나 걸리나요?";
+      setChatMessages(prev => [...prev, { role: 'user', content: userQuestion }]);
+      
+      // AI 응답 생성
+      setTimeout(() => {
+        setIsSpeaking(true);
+        const aiResponse = SURGERY_KNOWLEDGE_BASE.postSurgeryCare + " " + SURGERY_KNOWLEDGE_BASE.discharge;
+        setChatMessages(prev => [...prev, { role: 'ai', content: aiResponse }]);
+        setTimeout(() => setIsSpeaking(false), 5000);
+      }, 1000);
+    }, 3000);
+  };
+
+  const handleStopListening = () => {
+    setIsListening(false);
+  };
+
+  const handleAiChatComplete = () => {
+    setPhase("understanding-confirm");
+    setChatMessages([]);
   };
 
   const handleConsultationSubmit = () => {
@@ -507,6 +579,147 @@ const AvatarVoiceChatDialog = ({
           </div>
         )}
 
+        {/* Consultation Confirm Phase - Ask if want consultation or AI chat */}
+        {phase === "consultation-confirm" && (
+          <div className="flex-1 flex flex-col justify-center px-6 py-8 max-w-lg mx-auto w-full">
+            <div className="p-8 rounded-2xl bg-primary/5 border border-primary/20 text-center mb-8">
+              <UserRound className="w-16 h-16 text-primary mx-auto mb-6" />
+              <h2 className="text-2xl font-bold mb-3">
+                의료진과 면담을 진행하시겠습니까?
+              </h2>
+              <p className="text-base text-muted-foreground leading-relaxed">
+                의료진과 직접 면담을 신청하시거나,<br />
+                AI 음성 상담을 통해 추가 설명을 들으실 수 있습니다.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <Button
+                variant="hero"
+                size="lg"
+                className="w-full text-base py-6"
+                onClick={() => handleConsultationConfirm(true)}
+              >
+                <UserRound className="w-5 h-5 mr-3" />
+                의료진 면담 신청
+              </Button>
+
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full text-base py-6"
+                onClick={() => handleConsultationConfirm(false)}
+              >
+                <Headphones className="w-5 h-5 mr-3" />
+                AI 음성 상담으로 추가 설명 듣기
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="lg"
+                className="w-full text-base py-6"
+                onClick={() => setPhase("understanding-confirm")}
+              >
+                뒤로
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* AI Voice Chat Phase */}
+        {phase === "ai-voice-chat" && (
+          <div className="flex-1 flex flex-col px-6 py-8 max-w-lg mx-auto w-full">
+            <div className="p-4 rounded-2xl bg-primary/5 border border-primary/20 text-center mb-4">
+              <Headphones className="w-10 h-10 text-primary mx-auto mb-2" />
+              <h2 className="text-lg font-bold mb-1">
+                AI 음성 상담
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                수술에 관해 궁금하신 점을 말씀해 주세요
+              </p>
+            </div>
+
+            {/* Chat Messages */}
+            <div className="flex-1 overflow-auto space-y-3 mb-4 bg-muted/30 rounded-xl p-4">
+              {chatMessages.map((msg, index) => (
+                <div
+                  key={index}
+                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`max-w-[85%] p-3 rounded-2xl text-sm ${
+                      msg.role === 'user'
+                        ? 'bg-primary text-primary-foreground rounded-br-md'
+                        : 'bg-card border border-border rounded-bl-md'
+                    }`}
+                  >
+                    {msg.content}
+                  </div>
+                </div>
+              ))}
+              {isSpeaking && (
+                <div className="flex justify-start">
+                  <div className="bg-card border border-border rounded-2xl rounded-bl-md p-3 flex items-center gap-2">
+                    <Volume2 className="w-4 h-4 text-primary animate-pulse" />
+                    <span className="text-sm text-muted-foreground">AI가 설명 중...</span>
+                  </div>
+                </div>
+              )}
+              {isListening && (
+                <div className="flex justify-end">
+                  <div className="bg-primary/10 border border-primary/30 rounded-2xl rounded-br-md p-3 flex items-center gap-2">
+                    <Mic className="w-4 h-4 text-primary animate-pulse" />
+                    <span className="text-sm text-primary">듣고 있습니다...</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Voice Control */}
+            <div className="space-y-3">
+              <div className="flex justify-center">
+                <button
+                  onClick={isListening ? handleStopListening : handleStartListening}
+                  disabled={isSpeaking}
+                  className={`w-20 h-20 rounded-full flex items-center justify-center transition-all ${
+                    isListening
+                      ? 'bg-destructive text-destructive-foreground animate-pulse'
+                      : isSpeaking
+                      ? 'bg-muted text-muted-foreground cursor-not-allowed'
+                      : 'bg-primary text-primary-foreground hover:bg-primary/90'
+                  }`}
+                >
+                  {isListening ? (
+                    <MicOff className="w-8 h-8" />
+                  ) : (
+                    <Mic className="w-8 h-8" />
+                  )}
+                </button>
+              </div>
+              <p className="text-center text-xs text-muted-foreground">
+                {isListening ? '말씀을 멈추시려면 버튼을 누르세요' : isSpeaking ? 'AI가 설명 중입니다' : '버튼을 누르고 말씀해 주세요'}
+              </p>
+
+              <div className="flex gap-3 pt-2">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setPhase("consultation-confirm")}
+                >
+                  뒤로
+                </Button>
+                <Button
+                  variant="hero"
+                  className="flex-1"
+                  onClick={handleAiChatComplete}
+                >
+                  상담 완료
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Consultation Phase */}
         {phase === "consultation" && (
           <div className="space-y-4 py-4">
@@ -579,7 +792,7 @@ const AvatarVoiceChatDialog = ({
               <Button
                 variant="outline"
                 className="flex-1"
-                onClick={() => setPhase("understanding")}
+                onClick={() => setPhase("consultation-confirm")}
               >
                 뒤로
               </Button>
