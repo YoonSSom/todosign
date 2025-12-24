@@ -10,7 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Play, Pause, Video, HelpCircle, Calendar, Clock, MessageSquare, RotateCcw, Check } from "lucide-react";
+import { Play, Pause, Video, HelpCircle, Calendar, Clock, MessageSquare, RotateCcw, Check, BookOpen, ChevronRight } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import avatarDoctor from "@/assets/avatar-doctor.png";
 import avatarNurse from "@/assets/avatar-nurse.png";
@@ -22,7 +23,16 @@ interface AvatarVoiceChatDialogProps {
   onComplete: () => void;
 }
 
-type Phase = "intro" | "ready" | "video" | "understanding" | "consultation";
+type Phase = "intro" | "ready" | "video" | "understanding" | "understanding-check" | "understanding-explain" | "understanding-confirm" | "consultation";
+
+// 수술 설명 주제 목록
+const SURGERY_TOPICS = [
+  { id: "procedure", label: "수술 방법 및 과정", explanation: "수술은 전신마취 하에 진행되며, 약 2-3시간 소요됩니다. 최소 침습 방식으로 진행되어 회복이 빠릅니다." },
+  { id: "risks", label: "수술 위험성 및 합병증", explanation: "모든 수술에는 출혈, 감염, 마취 관련 위험이 있습니다. 드물게 신경 손상이나 혈전이 발생할 수 있으나, 발생률은 1% 미만입니다." },
+  { id: "recovery", label: "회복 기간 및 주의사항", explanation: "수술 후 1-2일 입원이 필요하며, 완전한 회복까지 약 4-6주가 소요됩니다. 무거운 물건을 들거나 격렬한 운동은 피해주세요." },
+  { id: "anesthesia", label: "마취 방법", explanation: "전신마취로 진행되며, 수술 전 마취과 전문의와 상담이 있습니다. 마취 전 8시간 금식이 필요합니다." },
+  { id: "alternatives", label: "대체 치료법", explanation: "수술 외에 약물 치료, 물리 치료 등의 보존적 치료가 있으나, 현재 상태에서는 수술이 가장 효과적인 치료법입니다." },
+];
 
 const AvatarVoiceChatDialog = ({
   open,
@@ -42,6 +52,9 @@ const AvatarVoiceChatDialog = ({
   const [consultDate, setConsultDate] = useState("");
   const [consultTime, setConsultTime] = useState("");
   const [consultReason, setConsultReason] = useState("");
+  
+  // Understanding check state
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
 
   // Reset state when dialog opens
   useEffect(() => {
@@ -52,6 +65,7 @@ const AvatarVoiceChatDialog = ({
       if (videoRef.current) {
         videoRef.current.currentTime = 0;
       }
+      setSelectedTopics([]);
     }
   }, [open]);
 
@@ -97,6 +111,34 @@ const AvatarVoiceChatDialog = ({
   };
 
   const handleUnderstanding = (understood: boolean) => {
+    if (understood) {
+      onComplete();
+    } else {
+      setPhase("understanding-check");
+    }
+  };
+
+  const handleTopicToggle = (topicId: string) => {
+    setSelectedTopics(prev => 
+      prev.includes(topicId) 
+        ? prev.filter(id => id !== topicId)
+        : [...prev, topicId]
+    );
+  };
+
+  const handleProceedToExplanation = () => {
+    if (selectedTopics.length === 0) {
+      toast.error("이해하지 못한 항목을 선택해주세요.");
+      return;
+    }
+    setPhase("understanding-explain");
+  };
+
+  const handleExplanationComplete = () => {
+    setPhase("understanding-confirm");
+  };
+
+  const handleFinalUnderstanding = (understood: boolean) => {
     if (understood) {
       onComplete();
     } else {
@@ -198,7 +240,7 @@ const AvatarVoiceChatDialog = ({
       {/* Fullscreen Video Dialog */}
       <Dialog open={open && phase !== "intro"} onOpenChange={onOpenChange}>
         <DialogContent className="w-screen h-screen max-w-none m-0 rounded-none flex flex-col">
-          {phase !== "understanding" && (
+          {phase !== "understanding" && phase !== "understanding-check" && phase !== "understanding-explain" && phase !== "understanding-confirm" && (
             <DialogHeader className="text-center shrink-0 pt-4">
               <div className="mx-auto w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
                 <Video className="w-6 h-6 text-primary" />
@@ -273,6 +315,150 @@ const AvatarVoiceChatDialog = ({
                   size="lg"
                   className="flex-1 text-base py-6"
                   onClick={() => handleUnderstanding(true)}
+                >
+                  이해함
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Understanding Check Phase - Select topics not understood */}
+        {phase === "understanding-check" && (
+          <div className="flex-1 flex flex-col justify-center px-6 py-8 max-w-lg mx-auto w-full overflow-auto">
+            <div className="p-6 rounded-2xl bg-primary/5 border border-primary/20 text-center mb-6">
+              <BookOpen className="w-12 h-12 text-primary mx-auto mb-4" />
+              <h2 className="text-xl font-bold mb-2">
+                어떤 부분이 이해되지 않으셨나요?
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                이해하지 못한 항목을 모두 선택해주세요
+              </p>
+            </div>
+
+            <div className="space-y-3 mb-6">
+              {SURGERY_TOPICS.map((topic) => (
+                <div
+                  key={topic.id}
+                  className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                    selectedTopics.includes(topic.id)
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/50"
+                  }`}
+                  onClick={() => handleTopicToggle(topic.id)}
+                >
+                  <Checkbox
+                    checked={selectedTopics.includes(topic.id)}
+                    onCheckedChange={() => handleTopicToggle(topic.id)}
+                  />
+                  <span className="text-base font-medium">{topic.label}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                size="lg"
+                className="flex-1"
+                onClick={() => setPhase("understanding")}
+              >
+                뒤로
+              </Button>
+              <Button
+                variant="hero"
+                size="lg"
+                className="flex-1"
+                onClick={handleProceedToExplanation}
+              >
+                다음
+                <ChevronRight className="w-4 h-4 ml-1" />
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Understanding Explain Phase - Show explanations */}
+        {phase === "understanding-explain" && (
+          <div className="flex-1 flex flex-col px-6 py-8 max-w-lg mx-auto w-full overflow-auto">
+            <div className="p-6 rounded-2xl bg-primary/5 border border-primary/20 text-center mb-6">
+              <BookOpen className="w-12 h-12 text-primary mx-auto mb-4" />
+              <h2 className="text-xl font-bold mb-2">
+                추가 설명
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                선택하신 항목에 대한 상세 설명입니다
+              </p>
+            </div>
+
+            <div className="space-y-4 mb-6 flex-1 overflow-auto">
+              {SURGERY_TOPICS.filter(topic => selectedTopics.includes(topic.id)).map((topic) => (
+                <div
+                  key={topic.id}
+                  className="p-5 rounded-xl border border-border bg-card"
+                >
+                  <h3 className="font-bold text-primary mb-2 flex items-center gap-2">
+                    <Check className="w-4 h-4" />
+                    {topic.label}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {topic.explanation}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <Button
+              variant="hero"
+              size="lg"
+              className="w-full"
+              onClick={handleExplanationComplete}
+            >
+              설명을 모두 확인했습니다
+              <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
+        )}
+
+        {/* Understanding Confirm Phase - Ask again */}
+        {phase === "understanding-confirm" && (
+          <div className="flex-1 flex flex-col justify-center px-6 py-8 max-w-lg mx-auto w-full">
+            <div className="p-8 rounded-2xl bg-primary/5 border border-primary/20 text-center mb-8">
+              <HelpCircle className="w-16 h-16 text-primary mx-auto mb-6" />
+              <h2 className="text-2xl font-bold mb-3">
+                {patientName}님, 이제 이해가 되셨나요?
+              </h2>
+              <p className="text-base text-muted-foreground leading-relaxed">
+                추가 설명을 확인하셨습니다.<br />
+                여전히 이해가 어려우시면 의료진 면담을 신청하실 수 있습니다.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full text-base py-6"
+                onClick={handleReplay}
+              >
+                <RotateCcw className="w-5 h-5 mr-3" />
+                처음부터 다시 듣기
+              </Button>
+
+              <div className="flex gap-4">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="flex-1 text-base py-6"
+                  onClick={() => handleFinalUnderstanding(false)}
+                >
+                  의료진 면담 신청
+                </Button>
+                <Button
+                  variant="hero"
+                  size="lg"
+                  className="flex-1 text-base py-6"
+                  onClick={() => handleFinalUnderstanding(true)}
                 >
                   이해함
                 </Button>
