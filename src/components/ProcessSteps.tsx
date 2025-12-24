@@ -1,17 +1,17 @@
-import { FileText, UserCheck, PenTool } from "lucide-react";
+import { User, FileText, PenTool } from "lucide-react";
 
 const steps = [
   {
     number: 1,
-    title: "문서 수신",
-    description: "병원에서 발송한 수술 동의서를 확인합니다",
-    icon: FileText,
+    title: "본인확인",
+    description: "안전한 본인인증 절차를 진행합니다",
+    icon: User,
   },
   {
     number: 2,
-    title: "본인인증",
-    description: "안전한 본인인증 절차를 진행합니다",
-    icon: UserCheck,
+    title: "동의서 작성",
+    description: "수술 동의서 내용을 확인하고 작성합니다",
+    icon: FileText,
   },
   {
     number: 3,
