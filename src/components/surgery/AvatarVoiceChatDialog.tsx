@@ -106,6 +106,16 @@ const AvatarVoiceChatDialog = ({
       if (videoRef.current) {
         videoRef.current.play();
         setIsPlaying(true);
+        
+        // 5초 후 영상 종료 처리
+        setTimeout(() => {
+          if (videoRef.current) {
+            videoRef.current.pause();
+            setVideoEnded(true);
+            setIsPlaying(false);
+            setPhase("understanding");
+          }
+        }, 5000);
       }
     }, 100);
   };
