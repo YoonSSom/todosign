@@ -492,7 +492,7 @@ const AvatarVoiceChatDialog = ({
                   className="flex-1 text-base py-6"
                   onClick={() => handleFinalUnderstanding(false)}
                 >
-                  의료진 면담 신청
+                  이해하지 못함
                 </Button>
                 <Button
                   variant="hero"
