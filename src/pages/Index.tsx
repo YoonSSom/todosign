@@ -1,5 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import HeroSection from "@/components/HeroSection";
+import ProcessSteps from "@/components/ProcessSteps";
+import FAQSection from "@/components/FAQSection";
 
 const Index = () => {
   return (
@@ -12,6 +14,8 @@ const Index = () => {
         />
       </Helmet>
       <HeroSection />
+      <ProcessSteps />
+      <FAQSection />
     </>
   );
 };
