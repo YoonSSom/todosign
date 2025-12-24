@@ -20,7 +20,7 @@ export interface PatientInfo {
 }
 
 
-type Step = "identity" | "consent-form" | "complete";
+type Step = "identity" | "explanation" | "consent-form" | "complete";
 
 const SurgeryConsent = () => {
   const [currentStep, setCurrentStep] = useState<Step>("identity");
@@ -36,6 +36,7 @@ const SurgeryConsent = () => {
 
   const handleIdentityVerified = (info: PatientInfo) => {
     setPatientInfo(info);
+    setCurrentStep("explanation");
     setShowSurgeryInfoDialog(true);
   };
 
@@ -87,7 +88,7 @@ const SurgeryConsent = () => {
 
         <main className="container py-8">
           {currentStep !== "complete" && (
-            <ProgressIndicator currentStep={currentStep} />
+            <ProgressIndicator currentStep={currentStep === "consent-form" ? "consent-form" : currentStep === "explanation" ? "explanation" : "identity"} />
           )}
 
           {currentStep === "identity" && (
