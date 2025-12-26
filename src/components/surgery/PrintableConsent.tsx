@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import type { PatientInfo } from "@/pages/SurgeryConsent";
-
+import asanLogo from "@/assets/asan-logo.png";
 interface PrintableConsentProps {
   patientInfo: PatientInfo;
   patientSignature?: string;
@@ -19,8 +19,8 @@ const PrintableConsent = ({
     <div className="print-consent p-8 bg-white text-black max-w-4xl mx-auto">
       {/* Header */}
       <div className="text-center border-b-2 border-black pb-4 mb-6">
+        <img src={asanLogo} alt="서울아산병원 로고" className="h-12 mx-auto mb-2" />
         <h1 className="text-2xl font-bold">수술 동의서</h1>
-        <p className="text-sm mt-2">아산병원</p>
       </div>
 
       {/* Patient Info Section */}
