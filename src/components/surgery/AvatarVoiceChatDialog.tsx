@@ -405,6 +405,15 @@ const AvatarVoiceChatDialog = ({
             <p className="text-center text-sm text-muted-foreground">
               {patientName}님의 수술에 대해<br />선택하신 AI 아바타가 상세히 안내해 드리겠습니다.
             </p>
+
+            {/* Notice Message */}
+            <div className="w-full p-4 rounded-xl bg-amber-50 border border-amber-200 dark:bg-amber-950/30 dark:border-amber-800">
+              <p className="text-sm text-amber-800 dark:text-amber-200 leading-relaxed text-center">
+                아바타가 진행하는 AI 수술 설명과 Q&A가 진행될 예정입니다.
+                <br />
+                <span className="font-medium">10~20분 정도 소요</span>되오니, 충분한 시간을 확보한 후 시작해주세요.
+              </p>
+            </div>
             
             <Button variant="hero" size="lg" onClick={handleStartIntro} className="w-full">
               <Play className="w-4 h-4 mr-2" />
