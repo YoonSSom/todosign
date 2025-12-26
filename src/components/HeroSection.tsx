@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { usePresentationNav } from "@/components/PresentationNav";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, HelpCircle } from "lucide-react";
 import asanLogo from "@/assets/asan-logo.png";
 import {
   Collapsible,
@@ -106,6 +106,7 @@ const HeroSection = () => {
                 size="xl"
                 className="px-8 py-6 text-lg border-primary/30 hover:bg-primary/5"
               >
+                <HelpCircle className="mr-2 h-5 w-5" />
                 자주 묻는 질문
                 <ChevronDown className={`ml-2 h-5 w-5 transition-transform duration-300 ${faqOpen ? 'rotate-180' : ''}`} />
               </Button>
