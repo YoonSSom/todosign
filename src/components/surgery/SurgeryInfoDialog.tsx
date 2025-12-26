@@ -103,6 +103,15 @@ const SurgeryInfoDialog = ({
               </div>
             </div>
           </div>
+
+          {/* Notice Message */}
+          <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 dark:bg-amber-950/30 dark:border-amber-800">
+            <p className="text-sm text-amber-800 dark:text-amber-200 leading-relaxed text-center">
+              아바타가 진행하는 AI 수술 설명과 Q&A가 진행될 예정입니다.
+              <br />
+              <span className="font-medium">10~20분 정도 소요</span>되오니, 충분한 시간을 확보한 후 시작해주세요.
+            </p>
+          </div>
         </div>
 
         <Button variant="hero" className="w-full" onClick={onConfirm}>
