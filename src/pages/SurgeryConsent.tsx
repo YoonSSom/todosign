@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import IdentityVerification from "@/components/surgery/IdentityVerification";
 import SurgeryInfoDialog from "@/components/surgery/SurgeryInfoDialog";
@@ -8,8 +8,25 @@ import SurgeryOrderGame from "@/components/surgery/SurgeryOrderGame";
 import ConsentForm from "@/components/surgery/ConsentForm";
 import CompletePage from "@/components/surgery/CompletePage";
 import ProgressIndicator from "@/components/surgery/ProgressIndicator";
+import ResumeProgressDialog from "@/components/surgery/ResumeProgressDialog";
 import { usePresentationNav } from "@/components/PresentationNav";
 import asanLogo from "@/assets/asan-logo.png";
+
+// Session and Progress utilities
+import { 
+  saveSessionToken, 
+  getSessionToken, 
+  clearSessionToken 
+} from "@/lib/sessionStorage";
+import { 
+  saveProgress, 
+  getProgress, 
+  clearProgress, 
+  updateProgressStep,
+  convertToPageStep,
+  type ProgressData,
+  type ConsentStep 
+} from "@/lib/progressStorage";
 
 export interface PatientInfo {
   name: string;
@@ -19,8 +36,8 @@ export interface PatientInfo {
   guardianName?: string;
   guardianPhone?: string;
   receptionNumber?: string;
+  patientId?: string; // 서버에서 반환하는 고유 ID
 }
-
 
 type Step = "identity" | "explanation" | "consent-form" | "complete";
 
@@ -35,8 +52,29 @@ const SurgeryConsent = () => {
   const [showFaceRecognitionDialog, setShowFaceRecognitionDialog] = useState(false);
   const [showAvatarVoiceChatDialog, setShowAvatarVoiceChatDialog] = useState(false);
   const [showGameDialog, setShowGameDialog] = useState(false);
+  
+  // Resume progress dialog
+  const [showResumeDialog, setShowResumeDialog] = useState(false);
+  const [savedProgress, setSavedProgress] = useState<ProgressData | null>(null);
+  const [pendingPatientInfo, setPendingPatientInfo] = useState<PatientInfo | null>(null);
 
   const { currentStepId, setCurrentStepId } = usePresentationNav();
+
+  // 초기 세션 확인
+  useEffect(() => {
+    const session = getSessionToken();
+    if (session) {
+      // 세션이 있으면 진행 상태 확인은 본인확인 후에 수행
+      console.log('Existing session found:', session.patientId);
+    }
+  }, []);
+
+  // 진행 상태 저장 함수
+  const saveCurrentProgress = useCallback((step: ConsentStep, surgeryInfo?: ProgressData['surgeryInfo']) => {
+    if (patientInfo?.patientId) {
+      updateProgressStep(patientInfo.patientId, step, surgeryInfo);
+    }
+  }, [patientInfo?.patientId]);
 
   // Sync presentation nav with current step
   useEffect(() => {
@@ -103,35 +141,116 @@ const SurgeryConsent = () => {
     }
   }, [currentStepId]);
 
-  const handleIdentityVerified = (info: PatientInfo) => {
+  // 저장된 단계로 이동
+  const navigateToStep = useCallback((step: ConsentStep, info: PatientInfo) => {
     setPatientInfo(info);
-    setCurrentStep("explanation");
-    setShowSurgeryInfoDialog(true);
-    setCurrentStepId("surgery-info");
+    setCurrentStepId(step);
+    
+    const pageStep = convertToPageStep(step);
+    setCurrentStep(pageStep);
+    
+    // 다이얼로그 상태 설정
+    setShowSurgeryInfoDialog(step === 'surgery-info');
+    setShowFaceRecognitionDialog(step === 'face-recognition');
+    setShowAvatarVoiceChatDialog(step === 'avatar-explanation');
+    setShowGameDialog(step === 'game');
+  }, [setCurrentStepId]);
+
+  const handleIdentityVerified = (info: PatientInfo) => {
+    // 환자 ID 생성 (실제 서버에서는 서버가 반환)
+    // 개인정보 인증: 이름 + 생년월일 + 전화번호 조합
+    // 접수번호 인증: 접수번호
+    const patientId = info.receptionNumber 
+      ? `RN-${info.receptionNumber}` 
+      : `PI-${info.name}-${info.birthDate?.getTime() || ''}-${info.phone}`;
+    
+    const infoWithId: PatientInfo = { ...info, patientId };
+    
+    // 세션 토큰 저장
+    saveSessionToken(patientId);
+    
+    // 저장된 진행 상태 확인
+    const existingProgress = getProgress(patientId);
+    
+    if (existingProgress && existingProgress.currentStep !== 'identity') {
+      // 저장된 진행 상태가 있으면 팝업 표시
+      setSavedProgress(existingProgress);
+      setPendingPatientInfo(infoWithId);
+      setShowResumeDialog(true);
+    } else {
+      // 저장된 진행 상태가 없으면 처음부터 시작
+      proceedAfterVerification(infoWithId, false);
+    }
+  };
+
+  const proceedAfterVerification = (info: PatientInfo, isResume: boolean, resumeStep?: ConsentStep) => {
+    setPatientInfo(info);
+    
+    if (isResume && resumeStep) {
+      navigateToStep(resumeStep, info);
+    } else {
+      // 새로 시작
+      setCurrentStep("explanation");
+      setShowSurgeryInfoDialog(true);
+      setCurrentStepId("surgery-info");
+      
+      // 진행 상태 저장
+      if (info.patientId) {
+        saveProgress({
+          patientId: info.patientId,
+          currentStep: 'surgery-info',
+          timestamp: Date.now(),
+        });
+      }
+    }
+  };
+
+  const handleResumeProgress = () => {
+    if (pendingPatientInfo && savedProgress) {
+      proceedAfterVerification(pendingPatientInfo, true, savedProgress.currentStep);
+    }
+    setShowResumeDialog(false);
+    setSavedProgress(null);
+    setPendingPatientInfo(null);
+  };
+
+  const handleStartFresh = () => {
+    if (pendingPatientInfo) {
+      // 진행 상태 초기화
+      clearProgress();
+      proceedAfterVerification(pendingPatientInfo, false);
+    }
+    setShowResumeDialog(false);
+    setSavedProgress(null);
+    setPendingPatientInfo(null);
   };
 
   const handleSurgeryInfoConfirmed = () => {
     setShowSurgeryInfoDialog(false);
     setShowFaceRecognitionDialog(true);
     setCurrentStepId("face-recognition");
+    saveCurrentProgress('face-recognition');
   };
 
   const handleFaceRecognitionComplete = () => {
     setShowFaceRecognitionDialog(false);
     setShowAvatarVoiceChatDialog(true);
     setCurrentStepId("avatar-explanation");
+    saveCurrentProgress('avatar-explanation');
   };
 
   const handleAvatarVideoComplete = () => {
     setShowAvatarVoiceChatDialog(false);
     setShowGameDialog(true);
     setCurrentStepId("game");
+    saveCurrentProgress('game');
   };
 
   const handleGameComplete = () => {
     setShowGameDialog(false);
     setCurrentStep("consent-form");
     setCurrentStepId("consent-form");
+    saveCurrentProgress('consent-form');
   };
 
   const handleConsentComplete = (patientSig?: string, guardianSig?: string) => {
@@ -139,6 +258,10 @@ const SurgeryConsent = () => {
     setGuardianSignature(guardianSig);
     setCurrentStep("complete");
     setCurrentStepId("complete");
+    
+    // 완료 시 진행 상태 및 세션 정리
+    clearProgress();
+    clearSessionToken();
   };
 
   return (
@@ -213,6 +336,15 @@ const SurgeryConsent = () => {
             />
           </>
         )}
+
+        {/* Resume Progress Dialog */}
+        <ResumeProgressDialog
+          open={showResumeDialog}
+          onOpenChange={setShowResumeDialog}
+          progressData={savedProgress}
+          onResume={handleResumeProgress}
+          onStartFresh={handleStartFresh}
+        />
       </div>
     </>
   );
