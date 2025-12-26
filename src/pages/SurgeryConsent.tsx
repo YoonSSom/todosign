@@ -60,14 +60,60 @@ const SurgeryConsent = () => {
 
   const { currentStepId, setCurrentStepId } = usePresentationNav();
 
+  // 현재 활성화된 ConsentStep 추적
+  const [activeConsentStep, setActiveConsentStep] = useState<ConsentStep>('identity');
+
   // 초기 세션 확인
   useEffect(() => {
     const session = getSessionToken();
     if (session) {
-      // 세션이 있으면 진행 상태 확인은 본인확인 후에 수행
       console.log('Existing session found:', session.patientId);
     }
   }, []);
+
+  // 자동 저장 간격 (30초)
+  const AUTO_SAVE_INTERVAL = 30000;
+
+  // 자동 저장 기능
+  useEffect(() => {
+    if (!patientInfo?.patientId || currentStep === 'complete' || currentStep === 'identity') {
+      return;
+    }
+
+    // 자동 저장 함수
+    const autoSave = () => {
+      if (patientInfo?.patientId && activeConsentStep !== 'identity' && activeConsentStep !== 'complete') {
+        updateProgressStep(patientInfo.patientId, activeConsentStep);
+        console.log('Auto-saved progress:', activeConsentStep);
+      }
+    };
+
+    // 일정 간격으로 자동 저장
+    const intervalId = setInterval(autoSave, AUTO_SAVE_INTERVAL);
+
+    // 페이지 언로드 시 저장
+    const handleBeforeUnload = () => {
+      if (patientInfo?.patientId && activeConsentStep !== 'identity' && activeConsentStep !== 'complete') {
+        updateProgressStep(patientInfo.patientId, activeConsentStep);
+      }
+    };
+
+    // visibility 변경 시 저장 (탭 전환, 앱 백그라운드 등)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        autoSave();
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [patientInfo?.patientId, activeConsentStep, currentStep]);
 
   // 진행 상태 저장 함수
   const saveCurrentProgress = useCallback((step: ConsentStep, surgeryInfo?: ProgressData['surgeryInfo']) => {
@@ -229,6 +275,7 @@ const SurgeryConsent = () => {
     setShowSurgeryInfoDialog(false);
     setShowFaceRecognitionDialog(true);
     setCurrentStepId("face-recognition");
+    setActiveConsentStep('face-recognition');
     saveCurrentProgress('face-recognition');
   };
 
@@ -236,6 +283,7 @@ const SurgeryConsent = () => {
     setShowFaceRecognitionDialog(false);
     setShowAvatarVoiceChatDialog(true);
     setCurrentStepId("avatar-explanation");
+    setActiveConsentStep('avatar-explanation');
     saveCurrentProgress('avatar-explanation');
   };
 
@@ -243,6 +291,7 @@ const SurgeryConsent = () => {
     setShowAvatarVoiceChatDialog(false);
     setShowGameDialog(true);
     setCurrentStepId("game");
+    setActiveConsentStep('game');
     saveCurrentProgress('game');
   };
 
@@ -250,6 +299,7 @@ const SurgeryConsent = () => {
     setShowGameDialog(false);
     setCurrentStep("consent-form");
     setCurrentStepId("consent-form");
+    setActiveConsentStep('consent-form');
     saveCurrentProgress('consent-form');
   };
 
@@ -258,11 +308,13 @@ const SurgeryConsent = () => {
     setGuardianSignature(guardianSig);
     setCurrentStep("complete");
     setCurrentStepId("complete");
+    setActiveConsentStep('complete');
     
     // 완료 시 진행 상태 및 세션 정리
     clearProgress();
     clearSessionToken();
   };
+
 
   return (
     <>
