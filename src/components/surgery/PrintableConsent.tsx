@@ -149,8 +149,9 @@ const PrintableConsent = ({
       </section>
 
       {/* Footer */}
-      <div className="mt-10 pt-4 border-t border-gray-300 text-center text-xs text-gray-500">
-        <p>서울특별시 송파구 올림픽로43길 88 아산병원</p>
+      <div className="mt-10 pt-4 border-t border-gray-300 text-center">
+        <img src={asanLogo} alt="서울아산병원 로고" className="h-8 mx-auto mb-2" />
+        <p className="text-xs text-gray-500">서울특별시 송파구 올림픽로43길 88</p>
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ const HeroSection = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-purple-50/30 to-slate-100">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-teal-50/30 to-slate-100">
       {/* Background Grid Pattern */}
       <div 
         className="absolute inset-0 opacity-30"
