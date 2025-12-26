@@ -18,7 +18,7 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        hero: "bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 hover:shadow-xl hover:-translate-y-1 font-semibold",
+        hero: "gradient-button text-primary-foreground shadow-lg hover:shadow-glow hover:-translate-y-1.5 hover:scale-105 font-semibold transition-all duration-300",
         medical: "bg-primary text-primary-foreground shadow-card hover:shadow-card-hover hover:-translate-y-0.5",
         "medical-outline": "border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-primary-foreground",
         success: "bg-medical-success text-primary-foreground hover:bg-medical-success/90 shadow-md",
