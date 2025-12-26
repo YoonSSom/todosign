@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Play, Pause, Video, HelpCircle, Calendar, Clock, MessageSquare, RotateCcw, Check, BookOpen, ChevronRight, Mic, MicOff, Volume2, UserRound, Headphones } from "lucide-react";
+import { Play, Pause, Video, HelpCircle, Calendar, Clock, MessageSquare, RotateCcw, Check, BookOpen, ChevronRight, ChevronLeft, Mic, MicOff, Volume2, UserRound, Headphones } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import avatarDoctor from "@/assets/avatar-doctor.png";
@@ -499,7 +499,31 @@ const AvatarVoiceChatDialog = ({
                 </div>
               </div>
 
-              <div className="flex flex-col items-center gap-4">
+              {/* 이전/다음 버튼 */}
+              <div className="flex items-center justify-center gap-4">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => {
+                    if (videoRef.current && currentChapter > 1) {
+                      const prevChapter = chapters.find(c => c.id === currentChapter - 1);
+                      if (prevChapter) {
+                        videoRef.current.currentTime = prevChapter.start;
+                        setCurrentChapter(prevChapter.id);
+                        if (!isPlaying) {
+                          videoRef.current.play();
+                          setIsPlaying(true);
+                        }
+                      }
+                    }
+                  }}
+                  disabled={currentChapter <= 1}
+                  className="px-6"
+                >
+                  <ChevronLeft className="w-5 h-5 mr-1" />
+                  이전
+                </Button>
+                
                 <Button
                   variant="default"
                   size="lg"
@@ -514,15 +538,39 @@ const AvatarVoiceChatDialog = ({
                       }
                     }
                   }}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg px-8 py-3 text-base font-semibold"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg px-8"
                 >
                   <MessageSquare className="w-5 h-5 mr-2" />
                   {isPlaying ? "질문하기" : "대화 질문 완료"}
                 </Button>
-                <p className="text-center text-xs text-muted-foreground">
-                  AI 설명을 끝까지 청취한 후에만 다음 단계로 이동 가능합니다.
-                </p>
+                
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => {
+                    if (videoRef.current && currentChapter < chapters.length) {
+                      const nextChapter = chapters.find(c => c.id === currentChapter + 1);
+                      if (nextChapter) {
+                        videoRef.current.currentTime = nextChapter.start;
+                        setCurrentChapter(nextChapter.id);
+                        if (!isPlaying) {
+                          videoRef.current.play();
+                          setIsPlaying(true);
+                        }
+                      }
+                    }
+                  }}
+                  disabled={currentChapter >= chapters.length}
+                  className="px-6"
+                >
+                  다음
+                  <ChevronRight className="w-5 h-5 ml-1" />
+                </Button>
               </div>
+              
+              <p className="text-center text-xs text-muted-foreground">
+                AI 설명을 끝까지 청취한 후에만 다음 단계로 이동 가능합니다.
+              </p>
 
             </div>
           )}
