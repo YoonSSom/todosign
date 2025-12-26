@@ -103,6 +103,13 @@ const AvatarVoiceChatDialog = ({
   const subtitleTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // 자막 데이터 (시간, 텍스트)
+  // 설명 챕터 정의
+  const chapters = [
+    { id: 1, title: "인사 및 안내", start: 0, end: 17.588 },
+    { id: 2, title: "수술 목적", start: 17.588, end: 51.272 },
+    { id: 3, title: "수술 방법", start: 51.272, end: 72.728 },
+  ];
+
   const subtitles = [
     { start: 0, end: 2.572, text: "안녕하십니까" },
     { start: 2.572, end: 7.452, text: "귀하께서 받으실 자궁 내막암 수술에 대해 설명드리겠습니다." },
@@ -118,6 +125,9 @@ const AvatarVoiceChatDialog = ({
     { start: 61.380, end: 67.432, text: "두 번째는 복강경 수술로 아랫배에 5개의 작은 구멍을 뚫어 진행합니다." },
     { start: 67.432, end: 72.728, text: "세 번째는 로봇을 이용한 수술로 정밀도가 매우 높은 수술입니다." },
   ];
+
+  // 현재 챕터 추적
+  const [currentChapter, setCurrentChapter] = useState(1);
 
   // Consultation form state
   const [consultName, setConsultName] = useState("");
@@ -155,7 +165,7 @@ const AvatarVoiceChatDialog = ({
     };
   }, [open]);
 
-  // 자막 업데이트
+  // 자막 및 챕터 업데이트
   useEffect(() => {
     if (isPlaying && videoRef.current) {
       subtitleTimerRef.current = setInterval(() => {
@@ -164,6 +174,14 @@ const AvatarVoiceChatDialog = ({
           (s) => currentTime >= s.start && currentTime < s.end
         );
         setCurrentSubtitle(subtitle?.text || "");
+        
+        // 현재 챕터 업데이트
+        const chapter = chapters.find(
+          (c) => currentTime >= c.start && currentTime < c.end
+        );
+        if (chapter) {
+          setCurrentChapter(chapter.id);
+        }
       }, 100);
     } else {
       if (subtitleTimerRef.current) {
@@ -436,6 +454,48 @@ const AvatarVoiceChatDialog = ({
                       {currentSubtitle || '\u00A0'}
                     </p>
                   </div>
+                </div>
+              </div>
+
+              {/* 챕터 진행 표시 */}
+              <div className="bg-muted/50 rounded-lg p-4">
+                <p className="text-xs text-muted-foreground mb-3 text-center">설명 진행 상황</p>
+                <div className="flex items-center justify-center gap-2">
+                  {chapters.map((chapter, index) => (
+                    <div key={chapter.id} className="flex items-center">
+                      <div className="flex flex-col items-center">
+                        <div
+                          className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 ${
+                            currentChapter === chapter.id
+                              ? "bg-primary text-primary-foreground ring-4 ring-primary/30 scale-110"
+                              : currentChapter > chapter.id
+                              ? "bg-primary/80 text-primary-foreground"
+                              : "bg-muted text-muted-foreground"
+                          }`}
+                        >
+                          {chapter.id}
+                        </div>
+                        <span
+                          className={`text-xs mt-1.5 max-w-[80px] text-center transition-colors duration-300 ${
+                            currentChapter === chapter.id
+                              ? "text-primary font-semibold"
+                              : currentChapter > chapter.id
+                              ? "text-foreground"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {chapter.title}
+                        </span>
+                      </div>
+                      {index < chapters.length - 1 && (
+                        <div
+                          className={`w-8 h-0.5 mx-1 mt-[-16px] transition-colors duration-300 ${
+                            currentChapter > chapter.id ? "bg-primary" : "bg-muted"
+                          }`}
+                        />
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
 
