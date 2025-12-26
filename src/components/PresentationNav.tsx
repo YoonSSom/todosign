@@ -68,7 +68,12 @@ export function PresentationNavProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function PresentationNav() {
+interface PresentationNavProps {
+  onNext?: () => void;
+  onPrev?: () => void;
+}
+
+export function PresentationNav({ onNext, onPrev }: PresentationNavProps = {}) {
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -91,7 +96,9 @@ export function PresentationNav() {
   if (currentIndex === -1) return null;
 
   const handlePrev = () => {
-    if (contextValue) {
+    if (onPrev) {
+      onPrev();
+    } else if (contextValue) {
       contextValue.goToPrevStep();
     } else if (prevStep) {
       navigate(prevStep.path);
@@ -99,7 +106,9 @@ export function PresentationNav() {
   };
 
   const handleNext = () => {
-    if (contextValue) {
+    if (onNext) {
+      onNext();
+    } else if (contextValue) {
       contextValue.goToNextStep();
     } else if (nextStep) {
       navigate(nextStep.path);
@@ -123,7 +132,7 @@ export function PresentationNav() {
         variant="ghost"
         size="sm"
         onClick={handlePrev}
-        disabled={!prevStep}
+        disabled={!prevStep && !onPrev}
         className="rounded-full px-3 gap-1"
       >
         <ChevronLeft className="h-4 w-4" />
@@ -153,7 +162,7 @@ export function PresentationNav() {
         variant="ghost"
         size="sm"
         onClick={handleNext}
-        disabled={!nextStep}
+        disabled={!nextStep && !onNext}
         className="rounded-full px-3 gap-1"
       >
         <span className="hidden sm:inline">다음</span>
