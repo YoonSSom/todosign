@@ -557,7 +557,7 @@ const AvatarVoiceChatDialog = ({
                       boxShadow: '0 0 30px hsla(240, 80%, 60%, 0.4)',
                     }}
                   >
-                    <MessageSquare className="w-8 h-8 text-white" />
+                    <Mic className="w-8 h-8 text-white" />
                   </button>
                 </div>
                 <p className="text-center text-sm font-medium text-foreground mt-2">
