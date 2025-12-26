@@ -12,12 +12,14 @@ interface FaceRecognitionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onComplete: () => void;
+  onBack: () => void;
 }
 
 const FaceRecognitionDialog = ({
   open,
   onOpenChange,
   onComplete,
+  onBack,
 }: FaceRecognitionDialogProps) => {
   const handleStart = () => {
     // In a real app, this would request camera permissions and perform face recognition
@@ -61,12 +63,12 @@ const FaceRecognitionDialog = ({
           </div>
         </div>
 
-        <div className="flex justify-end gap-3">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            취소
+        <div className="flex gap-3">
+          <Button variant="outline" className="flex-1" onClick={onBack}>
+            이전
           </Button>
-          <Button variant="hero" onClick={handleStart}>
-            확인 및 시작
+          <Button variant="hero" className="flex-1" onClick={handleStart}>
+            다음
           </Button>
         </div>
       </DialogContent>

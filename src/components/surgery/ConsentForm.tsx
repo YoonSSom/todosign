@@ -16,6 +16,7 @@ import type { PatientInfo } from "@/pages/SurgeryConsent";
 interface ConsentFormProps {
   patientInfo: PatientInfo;
   onComplete: (patientSignature?: string, guardianSignature?: string) => void;
+  onBack: () => void;
 }
 
 type HealthStatus = "yes" | "no" | "unknown";
@@ -26,7 +27,7 @@ interface HealthItem {
   value: HealthStatus;
 }
 
-const ConsentForm = ({ patientInfo, onComplete }: ConsentFormProps) => {
+const ConsentForm = ({ patientInfo, onComplete, onBack }: ConsentFormProps) => {
   // Form state
   const [registrationNumber, setRegistrationNumber] = useState("");
   const [surgeryName, setSurgeryName] = useState("");
@@ -421,11 +422,16 @@ const ConsentForm = ({ patientInfo, onComplete }: ConsentFormProps) => {
         </CardContent>
       </Card>
 
-      {/* Submit Button */}
-      <Button variant="hero" size="xl" className="w-full" onClick={handleSubmit}>
-        <PenLine className="w-5 h-5 mr-2" />
-        전자서명으로 동의하기
-      </Button>
+      {/* Navigation Buttons */}
+      <div className="flex gap-3">
+        <Button variant="outline" size="xl" className="flex-1" onClick={onBack}>
+          이전
+        </Button>
+        <Button variant="hero" size="xl" className="flex-1" onClick={handleSubmit}>
+          <PenLine className="w-5 h-5 mr-2" />
+          전자서명으로 동의하기
+        </Button>
+      </div>
 
       {/* Signature Dialog */}
       <SignatureDialog
