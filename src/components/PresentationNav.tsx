@@ -29,7 +29,13 @@ const PresentationContext = createContext<PresentationContextType | null>(null);
 export function usePresentationNav() {
   const context = useContext(PresentationContext);
   if (!context) {
-    throw new Error("usePresentationNav must be used within PresentationNavProvider");
+    // Return a default implementation when used outside provider
+    return {
+      currentStepId: "home" as StepId,
+      setCurrentStepId: () => {},
+      goToNextStep: () => {},
+      goToPrevStep: () => {},
+    };
   }
   return context;
 }
