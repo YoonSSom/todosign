@@ -561,7 +561,7 @@ const AvatarVoiceChatDialog = ({
                   </button>
                 </div>
                 <p className="text-center text-sm font-medium text-foreground mt-2">
-                  {isPlaying ? "질문하기" : "대화 질문 완료"}
+                  {isPlaying ? "질문하기" : "질문 완료"}
                 </p>
                 <p className="text-center text-xs text-muted-foreground">
                   AI 설명을 끝까지 청취한 후에만 다음 단계로 이동 가능합니다.
