@@ -1,9 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { FileCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { usePresentationNav } from "@/components/PresentationNav";
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  const { setCurrentStepId } = usePresentationNav();
+
+  const handleStartConsent = () => {
+    setCurrentStepId("identity");
+    navigate("/surgery-consent");
+  };
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-purple-50/30 to-slate-100">
@@ -52,7 +59,7 @@ const HeroSection = () => {
         <Button 
           variant="hero" 
           size="xl"
-          onClick={() => navigate("/surgery-consent")}
+          onClick={handleStartConsent}
           className="px-12 py-6 text-lg animate-fade-up"
           style={{ animationDelay: '300ms' }}
         >

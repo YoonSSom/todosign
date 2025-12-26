@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import IdentityVerification from "@/components/surgery/IdentityVerification";
 import SurgeryInfoDialog from "@/components/surgery/SurgeryInfoDialog";
@@ -8,6 +8,7 @@ import SurgeryOrderGame from "@/components/surgery/SurgeryOrderGame";
 import ConsentForm from "@/components/surgery/ConsentForm";
 import CompletePage from "@/components/surgery/CompletePage";
 import ProgressIndicator from "@/components/surgery/ProgressIndicator";
+import { usePresentationNav } from "@/components/PresentationNav";
 
 export interface PatientInfo {
   name: string;
@@ -34,36 +35,109 @@ const SurgeryConsent = () => {
   const [showAvatarVoiceChatDialog, setShowAvatarVoiceChatDialog] = useState(false);
   const [showGameDialog, setShowGameDialog] = useState(false);
 
+  const { currentStepId, setCurrentStepId } = usePresentationNav();
+
+  // Sync presentation nav with current step
+  useEffect(() => {
+    if (currentStepId === "identity" && currentStep !== "identity") {
+      setCurrentStep("identity");
+      setShowSurgeryInfoDialog(false);
+      setShowFaceRecognitionDialog(false);
+      setShowAvatarVoiceChatDialog(false);
+      setShowGameDialog(false);
+    } else if (currentStepId === "surgery-info") {
+      if (!patientInfo) {
+        setPatientInfo({ name: "홍길동", birthDate: new Date("1990-01-01"), phone: "010-1234-5678", isMinor: false });
+      }
+      setCurrentStep("explanation");
+      setShowSurgeryInfoDialog(true);
+      setShowFaceRecognitionDialog(false);
+      setShowAvatarVoiceChatDialog(false);
+      setShowGameDialog(false);
+    } else if (currentStepId === "face-recognition") {
+      if (!patientInfo) {
+        setPatientInfo({ name: "홍길동", birthDate: new Date("1990-01-01"), phone: "010-1234-5678", isMinor: false });
+      }
+      setCurrentStep("explanation");
+      setShowSurgeryInfoDialog(false);
+      setShowFaceRecognitionDialog(true);
+      setShowAvatarVoiceChatDialog(false);
+      setShowGameDialog(false);
+    } else if (currentStepId === "avatar-explanation") {
+      if (!patientInfo) {
+        setPatientInfo({ name: "홍길동", birthDate: new Date("1990-01-01"), phone: "010-1234-5678", isMinor: false });
+      }
+      setCurrentStep("explanation");
+      setShowSurgeryInfoDialog(false);
+      setShowFaceRecognitionDialog(false);
+      setShowAvatarVoiceChatDialog(true);
+      setShowGameDialog(false);
+    } else if (currentStepId === "game") {
+      if (!patientInfo) {
+        setPatientInfo({ name: "홍길동", birthDate: new Date("1990-01-01"), phone: "010-1234-5678", isMinor: false });
+      }
+      setCurrentStep("explanation");
+      setShowSurgeryInfoDialog(false);
+      setShowFaceRecognitionDialog(false);
+      setShowAvatarVoiceChatDialog(false);
+      setShowGameDialog(true);
+    } else if (currentStepId === "consent-form") {
+      if (!patientInfo) {
+        setPatientInfo({ name: "홍길동", birthDate: new Date("1990-01-01"), phone: "010-1234-5678", isMinor: false });
+      }
+      setCurrentStep("consent-form");
+      setShowSurgeryInfoDialog(false);
+      setShowFaceRecognitionDialog(false);
+      setShowAvatarVoiceChatDialog(false);
+      setShowGameDialog(false);
+    } else if (currentStepId === "complete") {
+      if (!patientInfo) {
+        setPatientInfo({ name: "홍길동", birthDate: new Date("1990-01-01"), phone: "010-1234-5678", isMinor: false });
+      }
+      setCurrentStep("complete");
+      setShowSurgeryInfoDialog(false);
+      setShowFaceRecognitionDialog(false);
+      setShowAvatarVoiceChatDialog(false);
+      setShowGameDialog(false);
+    }
+  }, [currentStepId]);
+
   const handleIdentityVerified = (info: PatientInfo) => {
     setPatientInfo(info);
     setCurrentStep("explanation");
     setShowSurgeryInfoDialog(true);
+    setCurrentStepId("surgery-info");
   };
 
   const handleSurgeryInfoConfirmed = () => {
     setShowSurgeryInfoDialog(false);
     setShowFaceRecognitionDialog(true);
+    setCurrentStepId("face-recognition");
   };
 
   const handleFaceRecognitionComplete = () => {
     setShowFaceRecognitionDialog(false);
     setShowAvatarVoiceChatDialog(true);
+    setCurrentStepId("avatar-explanation");
   };
 
   const handleAvatarVideoComplete = () => {
     setShowAvatarVoiceChatDialog(false);
     setShowGameDialog(true);
+    setCurrentStepId("game");
   };
 
   const handleGameComplete = () => {
     setShowGameDialog(false);
     setCurrentStep("consent-form");
+    setCurrentStepId("consent-form");
   };
 
   const handleConsentComplete = (patientSig?: string, guardianSig?: string) => {
     setPatientSignature(patientSig);
     setGuardianSignature(guardianSig);
     setCurrentStep("complete");
+    setCurrentStepId("complete");
   };
 
   return (

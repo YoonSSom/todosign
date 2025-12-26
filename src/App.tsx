@@ -7,7 +7,7 @@ import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import SurgeryConsent from "./pages/SurgeryConsent";
 import NotFound from "./pages/NotFound";
-import { PresentationNav } from "./components/PresentationNav";
+import { PresentationNav, PresentationNavProvider } from "./components/PresentationNav";
 
 const queryClient = new QueryClient();
 
@@ -18,13 +18,15 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <PresentationNav />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/surgery-consent" element={<SurgeryConsent />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <PresentationNavProvider>
+            <PresentationNav />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/surgery-consent" element={<SurgeryConsent />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </PresentationNavProvider>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
