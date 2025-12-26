@@ -512,32 +512,6 @@ const AvatarVoiceChatDialog = ({
 
               <div className="flex flex-col items-center gap-4">
                 <div className="relative">
-                  {/* Dot pattern background */}
-                  <div className="absolute inset-0 -m-6">
-                    <div className="w-full h-full relative">
-                      {[...Array(20)].map((_, i) => {
-                        const angle = (i * 18) * (Math.PI / 180);
-                        const radius = 50 + (i % 3) * 10;
-                        const x = Math.cos(angle) * radius;
-                        const y = Math.sin(angle) * radius;
-                        const opacity = 0.3 + (i % 3) * 0.2;
-                        return (
-                          <div
-                            key={i}
-                            className="absolute w-1.5 h-1.5 rounded-full"
-                            style={{
-                              left: `calc(50% + ${x}px)`,
-                              top: `calc(50% + ${y}px)`,
-                              background: `linear-gradient(135deg, hsl(var(--primary)) ${opacity * 100}%, hsl(280 80% 60%) ${opacity * 100}%)`,
-                              opacity: opacity,
-                              transform: 'translate(-50%, -50%)',
-                            }}
-                          />
-                        );
-                      })}
-                    </div>
-                  </div>
-                  
                   {/* Main button */}
                   <button
                     onClick={() => {
