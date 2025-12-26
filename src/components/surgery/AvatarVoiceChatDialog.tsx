@@ -512,6 +512,33 @@ const AvatarVoiceChatDialog = ({
 
               <div className="flex flex-col items-center gap-4">
                 <div className="relative">
+                  {/* Ripple effect rings */}
+                  <>
+                    <div 
+                      className="absolute inset-0 rounded-full animate-ping"
+                      style={{
+                        background: 'linear-gradient(135deg, hsl(175 100% 30% / 0.3), hsl(160 80% 35% / 0.3))',
+                        animationDuration: '2s',
+                      }}
+                    />
+                    <div 
+                      className="absolute -inset-2 rounded-full animate-ping"
+                      style={{
+                        background: 'linear-gradient(135deg, hsl(175 100% 30% / 0.2), hsl(160 80% 35% / 0.2))',
+                        animationDuration: '2.5s',
+                        animationDelay: '0.5s',
+                      }}
+                    />
+                    <div 
+                      className="absolute -inset-4 rounded-full animate-ping"
+                      style={{
+                        background: 'linear-gradient(135deg, hsl(175 100% 30% / 0.1), hsl(160 80% 35% / 0.1))',
+                        animationDuration: '3s',
+                        animationDelay: '1s',
+                      }}
+                    />
+                  </>
+                  
                   {/* Main button */}
                   <button
                     onClick={() => {
@@ -525,10 +552,10 @@ const AvatarVoiceChatDialog = ({
                         }
                       }
                     }}
-                    className="relative w-20 h-20 rounded-full flex items-center justify-center transition-all shadow-xl hover:scale-105"
+                    className="relative w-20 h-20 rounded-full flex items-center justify-center transition-all shadow-xl hover:scale-110"
                     style={{
-                      background: 'linear-gradient(135deg, hsl(200 80% 55%), hsl(280 80% 50%))',
-                      boxShadow: '0 0 30px hsla(240, 80%, 60%, 0.4)',
+                      background: 'linear-gradient(135deg, hsl(175 100% 30%), hsl(160 80% 35%), hsl(145 70% 40%))',
+                      boxShadow: '0 0 30px hsla(175, 100%, 30%, 0.4)',
                     }}
                   >
                     <Mic className="w-8 h-8 text-white" />
