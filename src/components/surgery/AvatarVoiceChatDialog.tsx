@@ -426,7 +426,7 @@ const AvatarVoiceChatDialog = ({
       {/* Fullscreen Video Dialog */}
       <Dialog open={open && phase !== "intro"} onOpenChange={onOpenChange}>
         <DialogContent className="w-screen h-screen max-w-none m-0 rounded-none flex flex-col pb-20">
-          <PresentationNav />
+          <PresentationNav onNext={() => setPhase("understanding")} />
           {phase !== "understanding" && phase !== "understanding-check" && phase !== "understanding-explain" && phase !== "understanding-confirm" && (
             <DialogHeader className="text-center shrink-0 pt-4">
               <div className="mx-auto w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
