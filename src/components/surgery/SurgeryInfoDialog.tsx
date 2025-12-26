@@ -16,6 +16,7 @@ interface SurgeryInfoDialogProps {
   onOpenChange: (open: boolean) => void;
   patientInfo: PatientInfo;
   onConfirm: () => void;
+  onBack: () => void;
 }
 
 const SurgeryInfoDialog = ({
@@ -23,6 +24,7 @@ const SurgeryInfoDialog = ({
   onOpenChange,
   patientInfo,
   onConfirm,
+  onBack,
 }: SurgeryInfoDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -105,9 +107,14 @@ const SurgeryInfoDialog = ({
           </div>
         </div>
 
-        <Button variant="hero" className="w-full" onClick={onConfirm}>
-          확인
-        </Button>
+        <div className="flex gap-3">
+          <Button variant="outline" className="flex-1" onClick={onBack}>
+            이전
+          </Button>
+          <Button variant="hero" className="flex-1" onClick={onConfirm}>
+            다음
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
