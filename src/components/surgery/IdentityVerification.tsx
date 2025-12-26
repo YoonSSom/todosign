@@ -342,7 +342,7 @@ const IdentityVerification = ({ onVerified }: IdentityVerificationProps) => {
               <div className="space-y-2">
                 <Label htmlFor="receptionName" className="flex items-center gap-2">
                   <User className="w-4 h-4" />
-                  환자 이름
+                  이름
                 </Label>
                 <Input
                   id="receptionName"
