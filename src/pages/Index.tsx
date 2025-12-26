@@ -1,8 +1,15 @@
+import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import HeroSection from "@/components/HeroSection";
 import FAQSection from "@/components/FAQSection";
+import { usePresentationNav } from "@/components/PresentationNav";
 
 const Index = () => {
+  const { setCurrentStepId } = usePresentationNav();
+
+  useEffect(() => {
+    setCurrentStepId("home");
+  }, [setCurrentStepId]);
   return (
     <>
       <Helmet>
