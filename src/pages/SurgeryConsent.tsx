@@ -9,6 +9,7 @@ import ConsentForm from "@/components/surgery/ConsentForm";
 import CompletePage from "@/components/surgery/CompletePage";
 import ProgressIndicator from "@/components/surgery/ProgressIndicator";
 import { usePresentationNav } from "@/components/PresentationNav";
+import asanLogo from "@/assets/asan-logo.png";
 
 export interface PatientInfo {
   name: string;
@@ -152,10 +153,7 @@ const SurgeryConsent = () => {
         <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container flex h-16 items-center">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg gradient-button flex items-center justify-center shadow-sm">
-                <span className="text-primary-foreground font-bold text-sm">A</span>
-              </div>
-              <span className="font-semibold text-foreground">아산병원</span>
+              <img src={asanLogo} alt="서울아산병원 로고" className="h-10 w-auto" />
             </div>
           </div>
         </header>

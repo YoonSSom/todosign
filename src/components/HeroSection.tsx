@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { FileCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { usePresentationNav } from "@/components/PresentationNav";
-
+import asanLogo from "@/assets/asan-logo.png";
 const HeroSection = () => {
   const navigate = useNavigate();
   const { setCurrentStepId } = usePresentationNav();
@@ -33,10 +32,7 @@ const HeroSection = () => {
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-20">
         {/* Logo Section */}
         <div className="flex items-center gap-3 mb-12 animate-fade-up">
-          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shadow-sm">
-            <FileCheck className="w-7 h-7 text-primary" />
-          </div>
-          <span className="text-xl font-bold text-foreground">아산병원</span>
+          <img src={asanLogo} alt="서울아산병원 로고" className="h-14 w-auto" />
         </div>
 
         {/* Title Section */}
