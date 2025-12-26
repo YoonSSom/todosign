@@ -511,25 +511,58 @@ const AvatarVoiceChatDialog = ({
               </div>
 
               <div className="flex flex-col items-center gap-4">
-                <Button
-                  variant="default"
-                  size="lg"
-                  onClick={() => {
-                    if (videoRef.current) {
-                      if (isPlaying) {
-                        videoRef.current.pause();
-                        setIsPlaying(false);
-                      } else {
-                        videoRef.current.play();
-                        setIsPlaying(true);
+                <div className="relative">
+                  {/* Dot pattern background */}
+                  <div className="absolute inset-0 -m-6">
+                    <div className="w-full h-full relative">
+                      {[...Array(20)].map((_, i) => {
+                        const angle = (i * 18) * (Math.PI / 180);
+                        const radius = 50 + (i % 3) * 10;
+                        const x = Math.cos(angle) * radius;
+                        const y = Math.sin(angle) * radius;
+                        const opacity = 0.3 + (i % 3) * 0.2;
+                        return (
+                          <div
+                            key={i}
+                            className="absolute w-1.5 h-1.5 rounded-full"
+                            style={{
+                              left: `calc(50% + ${x}px)`,
+                              top: `calc(50% + ${y}px)`,
+                              background: `linear-gradient(135deg, hsl(var(--primary)) ${opacity * 100}%, hsl(280 80% 60%) ${opacity * 100}%)`,
+                              opacity: opacity,
+                              transform: 'translate(-50%, -50%)',
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                  
+                  {/* Main button */}
+                  <button
+                    onClick={() => {
+                      if (videoRef.current) {
+                        if (isPlaying) {
+                          videoRef.current.pause();
+                          setIsPlaying(false);
+                        } else {
+                          videoRef.current.play();
+                          setIsPlaying(true);
+                        }
                       }
-                    }
-                  }}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg px-8 py-3 text-base font-semibold"
-                >
-                  <MessageSquare className="w-5 h-5 mr-2" />
+                    }}
+                    className="relative w-20 h-20 rounded-full flex items-center justify-center transition-all shadow-xl hover:scale-105"
+                    style={{
+                      background: 'linear-gradient(135deg, hsl(200 80% 55%), hsl(280 80% 50%))',
+                      boxShadow: '0 0 30px hsla(240, 80%, 60%, 0.4)',
+                    }}
+                  >
+                    <MessageSquare className="w-8 h-8 text-white" />
+                  </button>
+                </div>
+                <p className="text-center text-sm font-medium text-foreground mt-2">
                   {isPlaying ? "질문하기" : "대화 질문 완료"}
-                </Button>
+                </p>
                 <p className="text-center text-xs text-muted-foreground">
                   AI 설명을 끝까지 청취한 후에만 다음 단계로 이동 가능합니다.
                 </p>
@@ -540,7 +573,8 @@ const AvatarVoiceChatDialog = ({
 
         {/* Understanding Phase */}
         {phase === "understanding" && (
-          <div className="flex-1 flex flex-col justify-center px-6 py-8 max-w-lg mx-auto w-full">
+          <div className="flex-1 flex flex-col justify-center px-6 py-8 max-w-lg mx-auto w-full pb-20">
+            <PresentationNav />
             <div className="p-8 rounded-2xl bg-primary/5 border border-primary/20 text-center mb-8">
               <HelpCircle className="w-16 h-16 text-primary mx-auto mb-6" />
               <h2 className="text-2xl font-bold mb-3">
