@@ -512,32 +512,34 @@ const AvatarVoiceChatDialog = ({
 
               <div className="flex flex-col items-center gap-4">
                 <div className="relative">
-                  {/* Ripple effect rings */}
-                  <>
-                    <div 
-                      className="absolute inset-0 rounded-full animate-ping"
-                      style={{
-                        background: 'linear-gradient(135deg, hsl(175 100% 30% / 0.3), hsl(160 80% 35% / 0.3))',
-                        animationDuration: '2s',
-                      }}
-                    />
-                    <div 
-                      className="absolute -inset-2 rounded-full animate-ping"
-                      style={{
-                        background: 'linear-gradient(135deg, hsl(175 100% 30% / 0.2), hsl(160 80% 35% / 0.2))',
-                        animationDuration: '2.5s',
-                        animationDelay: '0.5s',
-                      }}
-                    />
-                    <div 
-                      className="absolute -inset-4 rounded-full animate-ping"
-                      style={{
-                        background: 'linear-gradient(135deg, hsl(175 100% 30% / 0.1), hsl(160 80% 35% / 0.1))',
-                        animationDuration: '3s',
-                        animationDelay: '1s',
-                      }}
-                    />
-                  </>
+                  {/* Ripple effect rings - only show when playing */}
+                  {isPlaying && (
+                    <>
+                      <div 
+                        className="absolute inset-0 rounded-full animate-ping"
+                        style={{
+                          background: 'linear-gradient(135deg, hsl(175 100% 30% / 0.3), hsl(160 80% 35% / 0.3))',
+                          animationDuration: '2s',
+                        }}
+                      />
+                      <div 
+                        className="absolute -inset-2 rounded-full animate-ping"
+                        style={{
+                          background: 'linear-gradient(135deg, hsl(175 100% 30% / 0.2), hsl(160 80% 35% / 0.2))',
+                          animationDuration: '2.5s',
+                          animationDelay: '0.5s',
+                        }}
+                      />
+                      <div 
+                        className="absolute -inset-4 rounded-full animate-ping"
+                        style={{
+                          background: 'linear-gradient(135deg, hsl(175 100% 30% / 0.1), hsl(160 80% 35% / 0.1))',
+                          animationDuration: '3s',
+                          animationDelay: '1s',
+                        }}
+                      />
+                    </>
+                  )}
                   
                   {/* Main button */}
                   <button
@@ -863,30 +865,30 @@ const AvatarVoiceChatDialog = ({
             <div className="space-y-4">
               <div className="flex justify-center">
                 <div className="relative">
-                  {/* Ripple effect rings */}
-                  {!isSpeaking && !isListening && (
+                  {/* Ripple effect rings - only show when listening */}
+                  {isListening && (
                     <>
                       <div 
                         className="absolute inset-0 rounded-full animate-ping"
                         style={{
-                          background: 'linear-gradient(135deg, hsl(175 100% 30% / 0.3), hsl(160 80% 35% / 0.3))',
-                          animationDuration: '2s',
+                          background: 'linear-gradient(135deg, hsl(0 80% 50% / 0.3), hsl(0 80% 40% / 0.3))',
+                          animationDuration: '1.5s',
                         }}
                       />
                       <div 
                         className="absolute -inset-2 rounded-full animate-ping"
                         style={{
-                          background: 'linear-gradient(135deg, hsl(175 100% 30% / 0.2), hsl(160 80% 35% / 0.2))',
-                          animationDuration: '2.5s',
-                          animationDelay: '0.5s',
+                          background: 'linear-gradient(135deg, hsl(0 80% 50% / 0.2), hsl(0 80% 40% / 0.2))',
+                          animationDuration: '2s',
+                          animationDelay: '0.3s',
                         }}
                       />
                       <div 
                         className="absolute -inset-4 rounded-full animate-ping"
                         style={{
-                          background: 'linear-gradient(135deg, hsl(175 100% 30% / 0.1), hsl(160 80% 35% / 0.1))',
-                          animationDuration: '3s',
-                          animationDelay: '1s',
+                          background: 'linear-gradient(135deg, hsl(0 80% 50% / 0.1), hsl(0 80% 40% / 0.1))',
+                          animationDuration: '2.5s',
+                          animationDelay: '0.6s',
                         }}
                       />
                     </>
