@@ -825,27 +825,69 @@ const AvatarVoiceChatDialog = ({
             </div>
 
             {/* Voice Control */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex justify-center">
-                <button
-                  onClick={isListening ? handleStopListening : handleStartListening}
-                  disabled={isSpeaking}
-                  className={`w-20 h-20 rounded-full flex items-center justify-center transition-all ${
-                    isListening
-                      ? 'bg-destructive text-destructive-foreground animate-pulse'
-                      : isSpeaking
-                      ? 'bg-muted text-muted-foreground cursor-not-allowed'
-                      : 'bg-primary text-primary-foreground hover:bg-primary/90'
-                  }`}
-                >
-                  {isListening ? (
-                    <MicOff className="w-8 h-8" />
-                  ) : (
-                    <Mic className="w-8 h-8" />
-                  )}
-                </button>
+                <div className="relative">
+                  {/* Dot pattern background */}
+                  <div className="absolute inset-0 -m-8">
+                    <div className="w-full h-full relative">
+                      {[...Array(24)].map((_, i) => {
+                        const angle = (i * 15) * (Math.PI / 180);
+                        const radius = 60 + (i % 3) * 12;
+                        const x = Math.cos(angle) * radius;
+                        const y = Math.sin(angle) * radius;
+                        const opacity = 0.3 + (i % 3) * 0.2;
+                        return (
+                          <div
+                            key={i}
+                            className="absolute w-2 h-2 rounded-full"
+                            style={{
+                              left: `calc(50% + ${x}px)`,
+                              top: `calc(50% + ${y}px)`,
+                              background: `linear-gradient(135deg, hsl(var(--primary)) ${opacity * 100}%, hsl(280 80% 60%) ${opacity * 100}%)`,
+                              opacity: isListening ? 1 : opacity,
+                              transform: 'translate(-50%, -50%)',
+                              animation: isListening ? `pulse ${1 + (i % 3) * 0.3}s ease-in-out infinite` : 'none',
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                  
+                  {/* Main button */}
+                  <button
+                    onClick={isListening ? handleStopListening : handleStartListening}
+                    disabled={isSpeaking}
+                    className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all shadow-xl ${
+                      isListening
+                        ? 'animate-pulse'
+                        : isSpeaking
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'hover:scale-105'
+                    }`}
+                    style={{
+                      background: isListening 
+                        ? 'linear-gradient(135deg, hsl(0 80% 50%), hsl(0 80% 40%))'
+                        : isSpeaking
+                        ? 'linear-gradient(135deg, hsl(var(--muted)), hsl(var(--muted)))'
+                        : 'linear-gradient(135deg, hsl(200 80% 55%), hsl(280 80% 50%))',
+                      boxShadow: isListening
+                        ? '0 0 40px hsla(0, 80%, 50%, 0.5)'
+                        : isSpeaking
+                        ? 'none'
+                        : '0 0 40px hsla(240, 80%, 60%, 0.4)',
+                    }}
+                  >
+                    {isListening ? (
+                      <MicOff className="w-10 h-10 text-white" />
+                    ) : (
+                      <Mic className="w-10 h-10 text-white" />
+                    )}
+                  </button>
+                </div>
               </div>
-              <p className="text-center text-xs text-muted-foreground">
+              <p className="text-center text-sm text-muted-foreground">
                 {isListening ? '말씀을 멈추시려면 버튼을 누르세요' : isSpeaking ? 'AI가 설명 중입니다' : '버튼을 누르고 말씀해 주세요'}
               </p>
 
