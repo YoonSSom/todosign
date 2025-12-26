@@ -45,20 +45,9 @@ const SurgeryConsent = () => {
     setShowFaceRecognitionDialog(true);
   };
 
-  const handleSurgeryInfoBack = () => {
-    setShowSurgeryInfoDialog(false);
-    setCurrentStep("identity");
-    setPatientInfo(null);
-  };
-
   const handleFaceRecognitionComplete = () => {
     setShowFaceRecognitionDialog(false);
     setShowAvatarVoiceChatDialog(true);
-  };
-
-  const handleFaceRecognitionBack = () => {
-    setShowFaceRecognitionDialog(false);
-    setShowSurgeryInfoDialog(true);
   };
 
   const handleAvatarVideoComplete = () => {
@@ -66,30 +55,15 @@ const SurgeryConsent = () => {
     setShowGameDialog(true);
   };
 
-  const handleAvatarVideoBack = () => {
-    setShowAvatarVoiceChatDialog(false);
-    setShowFaceRecognitionDialog(true);
-  };
-
   const handleGameComplete = () => {
     setShowGameDialog(false);
     setCurrentStep("consent-form");
-  };
-
-  const handleGameBack = () => {
-    setShowGameDialog(false);
-    setShowAvatarVoiceChatDialog(true);
   };
 
   const handleConsentComplete = (patientSig?: string, guardianSig?: string) => {
     setPatientSignature(patientSig);
     setGuardianSignature(guardianSig);
     setCurrentStep("complete");
-  };
-
-  const handleConsentBack = () => {
-    setShowGameDialog(true);
-    setCurrentStep("explanation");
   };
 
   return (
@@ -124,8 +98,7 @@ const SurgeryConsent = () => {
           {currentStep === "consent-form" && patientInfo && (
             <ConsentForm 
               patientInfo={patientInfo} 
-              onComplete={handleConsentComplete}
-              onBack={handleConsentBack}
+              onComplete={handleConsentComplete} 
             />
           )}
 
@@ -146,14 +119,12 @@ const SurgeryConsent = () => {
               onOpenChange={setShowSurgeryInfoDialog}
               patientInfo={patientInfo}
               onConfirm={handleSurgeryInfoConfirmed}
-              onBack={handleSurgeryInfoBack}
             />
 
             <FaceRecognitionDialog
               open={showFaceRecognitionDialog}
               onOpenChange={setShowFaceRecognitionDialog}
               onComplete={handleFaceRecognitionComplete}
-              onBack={handleFaceRecognitionBack}
             />
 
             <AvatarVoiceChatDialog
@@ -161,14 +132,12 @@ const SurgeryConsent = () => {
               onOpenChange={setShowAvatarVoiceChatDialog}
               patientName={patientInfo.name}
               onComplete={handleAvatarVideoComplete}
-              onBack={handleAvatarVideoBack}
             />
 
             <SurgeryOrderGame
               open={showGameDialog}
               onOpenChange={setShowGameDialog}
               onComplete={handleGameComplete}
-              onBack={handleGameBack}
             />
           </>
         )}

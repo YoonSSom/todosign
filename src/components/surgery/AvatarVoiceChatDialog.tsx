@@ -21,7 +21,6 @@ interface AvatarVoiceChatDialogProps {
   onOpenChange: (open: boolean) => void;
   patientName: string;
   onComplete: () => void;
-  onBack: () => void;
 }
 
 type Phase = "intro" | "ready" | "video" | "understanding" | "understanding-check" | "understanding-explain" | "understanding-confirm" | "consultation-confirm" | "ai-voice-chat" | "consultation";
@@ -93,7 +92,6 @@ const AvatarVoiceChatDialog = ({
   onOpenChange,
   patientName,
   onComplete,
-  onBack,
 }: AvatarVoiceChatDialogProps) => {
   const [phase, setPhase] = useState<Phase>("intro");
   const [isPlaying, setIsPlaying] = useState(false);
@@ -407,15 +405,10 @@ const AvatarVoiceChatDialog = ({
               {patientName}님의 수술에 대해<br />선택하신 AI 아바타가 상세히 안내해 드리겠습니다.
             </p>
             
-            <div className="flex gap-3 w-full">
-              <Button variant="outline" size="lg" onClick={onBack} className="flex-1">
-                이전
-              </Button>
-              <Button variant="hero" size="lg" onClick={handleStartIntro} className="flex-1">
-                <Play className="w-4 h-4 mr-2" />
-                대화 시작하기
-              </Button>
-            </div>
+            <Button variant="hero" size="lg" onClick={handleStartIntro} className="w-full">
+              <Play className="w-4 h-4 mr-2" />
+              대화 시작하기
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

@@ -16,7 +16,6 @@ interface SurgeryOrderGameProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onComplete: () => void;
-  onBack: () => void;
 }
 
 interface SurgeryType {
@@ -39,7 +38,6 @@ const SurgeryOrderGame = ({
   open,
   onOpenChange,
   onComplete,
-  onBack,
 }: SurgeryOrderGameProps) => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [wrongAttempts, setWrongAttempts] = useState(0);
@@ -196,37 +194,32 @@ const SurgeryOrderGame = ({
           )}
         </div>
 
-        <div className="space-y-3">
-          <div className="flex gap-3">
-            {wrongAttempts >= 3 ? (
-              <Button variant="hero" className="flex-1" onClick={handleWatchAgain}>
-                <RotateCcw className="w-4 h-4 mr-2" />
-                영상 다시 시청하기
+        <div className="flex gap-3">
+          {wrongAttempts >= 3 ? (
+            <Button variant="hero" className="flex-1" onClick={handleWatchAgain}>
+              <RotateCcw className="w-4 h-4 mr-2" />
+              영상 다시 시청하기
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setSelectedIds([])}
+                disabled={selectedIds.length === 0 || showResult !== null}
+              >
+                선택 초기화
               </Button>
-            ) : (
-              <>
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => setSelectedIds([])}
-                  disabled={selectedIds.length === 0 || showResult !== null}
-                >
-                  선택 초기화
-                </Button>
-                <Button
-                  variant="hero"
-                  className="flex-1"
-                  onClick={checkAnswer}
-                  disabled={selectedIds.length === 0 || showResult !== null}
-                >
-                  정답 확인
-                </Button>
-              </>
-            )}
-          </div>
-          <Button variant="outline" className="w-full" onClick={onBack}>
-            이전
-          </Button>
+              <Button
+                variant="hero"
+                className="flex-1"
+                onClick={checkAnswer}
+                disabled={selectedIds.length === 0 || showResult !== null}
+              >
+                정답 확인
+              </Button>
+            </>
+          )}
         </div>
       </DialogContent>
     </Dialog>
