@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import IdentityVerification from "@/components/surgery/IdentityVerification";
 import SurgeryInfoDialog from "@/components/surgery/SurgeryInfoDialog";
@@ -327,9 +328,9 @@ const SurgeryConsent = () => {
         {/* Header */}
         <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container flex h-16 items-center">
-            <div className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <img src={asanLogo} alt="서울아산병원 로고" className="h-10 w-auto" />
-            </div>
+            </Link>
           </div>
         </header>
 
