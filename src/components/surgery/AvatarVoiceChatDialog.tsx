@@ -343,7 +343,8 @@ const AvatarVoiceChatDialog = ({
     <>
       {/* Intro Popup */}
       <Dialog open={open && phase === "intro"} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="sm:max-w-lg pb-20">
+          <PresentationNav onNext={() => setPhase("understanding")} />
           <DialogHeader className="text-center">
             <DialogTitle className="text-lg">AI 아바타 수술 설명</DialogTitle>
             <DialogDescription>
