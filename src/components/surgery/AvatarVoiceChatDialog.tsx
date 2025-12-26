@@ -836,6 +836,35 @@ const AvatarVoiceChatDialog = ({
             <div className="space-y-4">
               <div className="flex justify-center">
                 <div className="relative">
+                  {/* Ripple effect rings */}
+                  {!isSpeaking && !isListening && (
+                    <>
+                      <div 
+                        className="absolute inset-0 rounded-full animate-ping"
+                        style={{
+                          background: 'linear-gradient(135deg, hsl(175 100% 30% / 0.3), hsl(160 80% 35% / 0.3))',
+                          animationDuration: '2s',
+                        }}
+                      />
+                      <div 
+                        className="absolute -inset-2 rounded-full animate-ping"
+                        style={{
+                          background: 'linear-gradient(135deg, hsl(175 100% 30% / 0.2), hsl(160 80% 35% / 0.2))',
+                          animationDuration: '2.5s',
+                          animationDelay: '0.5s',
+                        }}
+                      />
+                      <div 
+                        className="absolute -inset-4 rounded-full animate-ping"
+                        style={{
+                          background: 'linear-gradient(135deg, hsl(175 100% 30% / 0.1), hsl(160 80% 35% / 0.1))',
+                          animationDuration: '3s',
+                          animationDelay: '1s',
+                        }}
+                      />
+                    </>
+                  )}
+                  
                   {/* Main button */}
                   <button
                     onClick={isListening ? handleStopListening : handleStartListening}
@@ -845,19 +874,19 @@ const AvatarVoiceChatDialog = ({
                         ? 'animate-pulse'
                         : isSpeaking
                         ? 'opacity-50 cursor-not-allowed'
-                        : 'hover:scale-105'
+                        : 'hover:scale-110 hover:shadow-glow'
                     }`}
                     style={{
                       background: isListening 
                         ? 'linear-gradient(135deg, hsl(0 80% 50%), hsl(0 80% 40%))'
                         : isSpeaking
                         ? 'linear-gradient(135deg, hsl(var(--muted)), hsl(var(--muted)))'
-                        : 'linear-gradient(135deg, hsl(200 80% 55%), hsl(280 80% 50%))',
+                        : 'linear-gradient(135deg, hsl(175 100% 30%), hsl(160 80% 35%), hsl(145 70% 40%))',
                       boxShadow: isListening
                         ? '0 0 40px hsla(0, 80%, 50%, 0.5)'
                         : isSpeaking
                         ? 'none'
-                        : '0 0 40px hsla(240, 80%, 60%, 0.4)',
+                        : '0 0 40px hsla(175, 100%, 30%, 0.4)',
                     }}
                   >
                     {isListening ? (
