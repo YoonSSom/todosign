@@ -380,6 +380,9 @@ const SurgeryConsent = () => {
               onOpenChange={setShowAvatarVoiceChatDialog}
               patientName={patientInfo.name}
               onComplete={handleAvatarVideoComplete}
+              onBackToIntro={() => {
+                // 아바타 선택 팝업(intro)으로 돌아가기 - 다이얼로그 내부에서 처리됨
+              }}
             />
 
             <SurgeryOrderGame
