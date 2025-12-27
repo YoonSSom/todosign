@@ -133,7 +133,7 @@ export function PresentationNav({ onNext, onPrev }: PresentationNavProps = {}) {
   };
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 bg-background/30 backdrop-blur-md border border-border/30 rounded-full px-3 py-2 shadow-lg">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 bg-background/20 backdrop-blur-sm border border-border/20 rounded-full px-3 py-2 shadow-sm opacity-40 hover:opacity-100 transition-opacity duration-300">
       <Button
         variant="ghost"
         size="sm"
