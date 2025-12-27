@@ -436,7 +436,6 @@ const AvatarVoiceChatDialog = ({
               }
             }}
           />
-          <PresentationNav onNext={() => setPhase("understanding")} />
           {phase !== "understanding" && phase !== "understanding-check" && phase !== "understanding-explain" && phase !== "understanding-confirm" && (
             <DialogHeader className="text-center shrink-0 pt-4">
               <div className="mx-auto w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
