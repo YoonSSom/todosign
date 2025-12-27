@@ -22,6 +22,7 @@ interface AvatarVoiceChatDialogProps {
   onOpenChange: (open: boolean) => void;
   patientName: string;
   onComplete: () => void;
+  onBackToIntro?: () => void;
 }
 
 type Phase = "intro" | "ready" | "video" | "understanding" | "understanding-check" | "understanding-explain" | "understanding-confirm" | "consultation-confirm" | "ai-voice-chat" | "consultation";
@@ -93,6 +94,7 @@ const AvatarVoiceChatDialog = ({
   onOpenChange,
   patientName,
   onComplete,
+  onBackToIntro,
 }: AvatarVoiceChatDialogProps) => {
   const [phase, setPhase] = useState<Phase>("intro");
   const [isPlaying, setIsPlaying] = useState(false);
@@ -426,6 +428,14 @@ const AvatarVoiceChatDialog = ({
       {/* Fullscreen Video Dialog */}
       <Dialog open={open && phase !== "intro"} onOpenChange={onOpenChange}>
         <DialogContent className="w-screen h-screen max-w-none m-0 rounded-none flex flex-col pb-20">
+          <PresentationNav 
+            onNext={() => setPhase("understanding")} 
+            onPrev={() => {
+              if (onBackToIntro) {
+                setPhase("intro");
+              }
+            }}
+          />
           <PresentationNav onNext={() => setPhase("understanding")} />
           {phase !== "understanding" && phase !== "understanding-check" && phase !== "understanding-explain" && phase !== "understanding-confirm" && (
             <DialogHeader className="text-center shrink-0 pt-4">
@@ -548,7 +558,6 @@ const AvatarVoiceChatDialog = ({
         {/* Understanding Phase */}
         {phase === "understanding" && (
           <div className="flex-1 flex flex-col justify-center px-6 py-8 max-w-lg mx-auto w-full pb-20">
-            <PresentationNav />
             <div className="p-8 rounded-2xl bg-primary/5 border border-primary/20 text-center mb-8">
               <HelpCircle className="w-16 h-16 text-primary mx-auto mb-6" />
               <h2 className="text-2xl font-bold mb-3">
