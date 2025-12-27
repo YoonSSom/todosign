@@ -10,7 +10,7 @@ import {
   Users, 
   MapPin, 
   Navigation, 
-  Printer, 
+  MessageCircle, 
   Home,
   ExternalLink
 } from "lucide-react";
@@ -51,9 +51,10 @@ const CompletePage = ({ patientInfo, patientSignature, guardianSignature }: Comp
     }
   };
 
-  const handlePrint = () => {
-    toast.success("동의서 출력을 준비합니다.");
-    window.print();
+  const handleKakaoShare = () => {
+    toast.success("카카오톡으로 동의서를 전송합니다.");
+    // 카카오톡 공유 기능 (실제 구현 시 Kakao SDK 연동 필요)
+    window.open("https://sharer.kakao.com/talk/friends/picker/link", "_blank");
   };
 
   const openNaverMap = () => {
@@ -198,10 +199,10 @@ const CompletePage = ({ patientInfo, patientSignature, guardianSignature }: Comp
           variant="outline"
           size="lg"
           className="flex-1"
-          onClick={handlePrint}
+          onClick={handleKakaoShare}
         >
-          <Printer className="w-5 h-5 mr-2" />
-          동의서 출력
+          <MessageCircle className="w-5 h-5 mr-2" />
+          카카오톡으로 받기
         </Button>
         <Button
           variant="hero"
