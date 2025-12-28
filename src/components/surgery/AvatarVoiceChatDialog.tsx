@@ -668,7 +668,7 @@ const AvatarVoiceChatDialog = ({
               </p>
             </div>
 
-            <div className="relative flex-1 bg-black rounded-lg overflow-hidden mb-6">
+            <div className="relative bg-black rounded-lg overflow-hidden mb-6 aspect-[9/16] max-h-[60vh] mx-auto">
               <video
                 src="/additional-explanation.mp4"
                 className="w-full h-full object-contain"
