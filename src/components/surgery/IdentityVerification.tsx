@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format, differenceInYears, parse, isValid } from "date-fns";
 import { ko } from "date-fns/locale";
 import { CalendarIcon, Shield, User, Phone, Users, Hash } from "lucide-react";
@@ -18,7 +17,7 @@ interface IdentityVerificationProps {
 }
 
 const IdentityVerification = ({ onVerified }: IdentityVerificationProps) => {
-  const [verificationMethod, setVerificationMethod] = useState<"personal" | "reception">("personal");
+  const [selectedMethod, setSelectedMethod] = useState<"none" | "personal" | "reception">("none");
   
   // Personal verification state
   const [name, setName] = useState("");
@@ -168,6 +167,45 @@ const IdentityVerification = ({ onVerified }: IdentityVerificationProps) => {
     });
   };
 
+  // Method selection screen
+  if (selectedMethod === "none") {
+    return (
+      <div className="max-w-lg mx-auto animate-fade-up">
+        <Card className="shadow-card">
+          <CardHeader className="text-center pb-6">
+            <div className="mx-auto w-16 h-16 rounded-2xl gradient-button flex items-center justify-center mb-4 shadow-lg">
+              <Shield className="w-8 h-8 text-primary-foreground" />
+            </div>
+            <CardTitle className="text-2xl">본인확인</CardTitle>
+            <CardDescription>
+              수술 동의서 작성을 위해 본인확인이 필요합니다
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full h-20 flex flex-col items-center justify-center gap-2 hover:border-primary hover:bg-primary/5 transition-all"
+              onClick={() => setSelectedMethod("personal")}
+            >
+              <Phone className="w-6 h-6 text-primary" />
+              <span className="font-medium">핸드폰번호로 로그인</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full h-20 flex flex-col items-center justify-center gap-2 hover:border-primary hover:bg-primary/5 transition-all"
+              onClick={() => setSelectedMethod("reception")}
+            >
+              <Hash className="w-6 h-6 text-primary" />
+              <span className="font-medium">접수번호로 로그인</span>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-lg mx-auto animate-fade-up">
       <Card className="shadow-card">
@@ -177,18 +215,22 @@ const IdentityVerification = ({ onVerified }: IdentityVerificationProps) => {
           </div>
           <CardTitle className="text-2xl">본인확인</CardTitle>
           <CardDescription>
-            수술 동의서 작성을 위해 본인확인이 필요합니다
+            {selectedMethod === "personal" ? "개인정보로 본인확인" : "접수번호로 본인확인"}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <Tabs value={verificationMethod} onValueChange={(v) => setVerificationMethod(v as "personal" | "reception")}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="personal">개인정보 확인</TabsTrigger>
-              <TabsTrigger value="reception">접수번호 확인</TabsTrigger>
-            </TabsList>
+          {/* Back button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground"
+            onClick={() => setSelectedMethod("none")}
+          >
+            ← 다른 방법으로 로그인
+          </Button>
 
-            {/* Personal Verification Tab */}
-            <TabsContent value="personal" className="space-y-6 mt-6">
+          {selectedMethod === "personal" ? (
+            <div className="space-y-6">
               {/* Name Input */}
               <div className="space-y-2">
                 <Label htmlFor="name" className="flex items-center gap-2">
@@ -313,10 +355,9 @@ const IdentityVerification = ({ onVerified }: IdentityVerificationProps) => {
               >
                 본인확인 진행
               </Button>
-            </TabsContent>
-
-            {/* Reception Number Verification Tab */}
-            <TabsContent value="reception" className="space-y-6 mt-6">
+            </div>
+          ) : (
+            <div className="space-y-6">
               <div className="p-4 rounded-xl bg-muted/50 border border-border">
                 <p className="text-sm text-muted-foreground">
                   병원에서 발급받은 접수번호로 간편하게 본인확인을 진행할 수 있습니다.
@@ -361,8 +402,8 @@ const IdentityVerification = ({ onVerified }: IdentityVerificationProps) => {
               >
                 본인확인 진행
               </Button>
-            </TabsContent>
-          </Tabs>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
