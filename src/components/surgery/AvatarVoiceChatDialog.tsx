@@ -454,7 +454,7 @@ const AvatarVoiceChatDialog = ({
           {/* Video Element - Always rendered but visibility controlled */}
           {(phase === "ready" || phase === "video") && (
             <div className="flex flex-col gap-4 flex-1 overflow-hidden">
-              <div className="relative flex-1 bg-black rounded-lg overflow-hidden">
+              <div className="relative bg-black rounded-lg overflow-hidden aspect-video">
                 <video
                   ref={videoRef}
                   src={selectedAvatar === "nurse" ? "/persona_W.mp4" : "/persona.mp4"}
