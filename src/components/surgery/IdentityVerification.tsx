@@ -185,19 +185,19 @@ const IdentityVerification = ({ onVerified }: IdentityVerificationProps) => {
             <Button
               variant="outline"
               size="lg"
-              className="w-full h-20 flex flex-col items-center justify-center gap-2 hover:border-primary hover:bg-primary/5 transition-all"
+              className="w-full h-20 flex flex-col items-center justify-center gap-2 hover:border-primary hover:bg-primary/5 transition-all group"
               onClick={() => setSelectedMethod("personal")}
             >
-              <Phone className="w-6 h-6 text-primary" />
+              <Phone className="w-6 h-6 text-primary transition-all duration-300 group-hover:scale-125 group-hover:rotate-12" />
               <span className="font-medium">핸드폰번호로 로그인</span>
             </Button>
             <Button
               variant="outline"
               size="lg"
-              className="w-full h-20 flex flex-col items-center justify-center gap-2 hover:border-primary hover:bg-primary/5 transition-all"
+              className="w-full h-20 flex flex-col items-center justify-center gap-2 hover:border-primary hover:bg-primary/5 transition-all group"
               onClick={() => setSelectedMethod("reception")}
             >
-              <Hash className="w-6 h-6 text-primary" />
+              <Hash className="w-6 h-6 text-primary transition-all duration-300 group-hover:scale-125 group-hover:-rotate-12" />
               <span className="font-medium">접수번호로 로그인</span>
             </Button>
           </CardContent>
