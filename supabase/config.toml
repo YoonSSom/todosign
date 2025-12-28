@@ -1,0 +1,4 @@
+project_id = "uzeiprowbvpwvdguiegx"
+
+[functions.surgery-chat]
+verify_jwt = false
