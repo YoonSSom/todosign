@@ -664,25 +664,18 @@ const AvatarVoiceChatDialog = ({
                 추가 설명
               </h2>
               <p className="text-sm text-muted-foreground">
-                선택하신 항목에 대한 상세 설명입니다
+                선택하신 항목에 대한 상세 설명 영상입니다
               </p>
             </div>
 
-            <div className="space-y-4 mb-6 flex-1 overflow-auto">
-              {SURGERY_TOPICS.filter(topic => selectedTopics.includes(topic.id)).map((topic) => (
-                <div
-                  key={topic.id}
-                  className="p-5 rounded-xl border border-border bg-card"
-                >
-                  <h3 className="font-bold text-primary mb-2 flex items-center gap-2">
-                    <Check className="w-4 h-4" />
-                    {topic.label}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {topic.explanation}
-                  </p>
-                </div>
-              ))}
+            <div className="relative flex-1 bg-black rounded-lg overflow-hidden mb-6">
+              <video
+                src="/additional-explanation.mp4"
+                className="w-full h-full object-contain"
+                controls
+                autoPlay
+                playsInline
+              />
             </div>
 
             <Button
