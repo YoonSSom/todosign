@@ -453,12 +453,45 @@ const AvatarVoiceChatDialog = ({
 
           {/* Video Element - Always rendered but visibility controlled */}
           {(phase === "ready" || phase === "video") && (
-            <div className="flex flex-col gap-4 flex-1 overflow-hidden">
-              <div className="relative bg-black rounded-lg overflow-hidden aspect-video">
+            <div className="flex flex-col gap-3 flex-1 overflow-hidden">
+              {/* 챕터 진행 표시 - 상단 왼쪽 */}
+              <div className="flex items-center gap-2 px-2">
+                <p className="text-xs text-muted-foreground whitespace-nowrap">진행:</p>
+                <div className="flex items-center gap-1.5">
+                  {chapters.map((chapter, index) => (
+                    <div key={chapter.id} className="flex items-center">
+                      <div
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 ${
+                          currentChapter === chapter.id
+                            ? "bg-primary text-primary-foreground ring-2 ring-primary/30"
+                            : currentChapter > chapter.id
+                            ? "bg-primary/80 text-primary-foreground"
+                            : "bg-muted text-muted-foreground"
+                        }`}
+                      >
+                        {chapter.id}
+                      </div>
+                      {index < chapters.length - 1 && (
+                        <div
+                          className={`w-4 h-0.5 mx-0.5 transition-colors duration-300 ${
+                            currentChapter > chapter.id ? "bg-primary" : "bg-muted"
+                          }`}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <span className="text-xs text-primary font-medium ml-2">
+                  {chapters.find(c => c.id === currentChapter)?.title}
+                </span>
+              </div>
+
+              {/* 영상 영역 - 더 크게 */}
+              <div className="relative bg-black rounded-lg overflow-hidden flex-1">
                 <video
                   ref={videoRef}
                   src={selectedAvatar === "nurse" ? "/persona_W.mp4" : "/persona.mp4"}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover"
                   onEnded={handleVideoEnded}
                   onPlay={() => setIsPlaying(true)}
                   onPause={() => setIsPlaying(false)}
@@ -474,48 +507,6 @@ const AvatarVoiceChatDialog = ({
                       {currentSubtitle || '\u00A0'}
                     </p>
                   </div>
-                </div>
-              </div>
-
-              {/* 챕터 진행 표시 */}
-              <div className="bg-muted/50 rounded-lg p-4">
-                <p className="text-xs text-muted-foreground mb-3 text-center">설명 진행 상황</p>
-                <div className="flex items-center justify-center gap-2">
-                  {chapters.map((chapter, index) => (
-                    <div key={chapter.id} className="flex items-center">
-                      <div className="flex flex-col items-center">
-                        <div
-                          className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 ${
-                            currentChapter === chapter.id
-                              ? "bg-primary text-primary-foreground ring-4 ring-primary/30 scale-110"
-                              : currentChapter > chapter.id
-                              ? "bg-primary/80 text-primary-foreground"
-                              : "bg-muted text-muted-foreground"
-                          }`}
-                        >
-                          {chapter.id}
-                        </div>
-                        <span
-                          className={`text-xs mt-1.5 max-w-[80px] text-center transition-colors duration-300 ${
-                            currentChapter === chapter.id
-                              ? "text-primary font-semibold"
-                              : currentChapter > chapter.id
-                              ? "text-foreground"
-                              : "text-muted-foreground"
-                          }`}
-                        >
-                          {chapter.title}
-                        </span>
-                      </div>
-                      {index < chapters.length - 1 && (
-                        <div
-                          className={`w-8 h-0.5 mx-1 mt-[-16px] transition-colors duration-300 ${
-                            currentChapter > chapter.id ? "bg-primary" : "bg-muted"
-                          }`}
-                        />
-                      )}
-                    </div>
-                  ))}
                 </div>
               </div>
 
