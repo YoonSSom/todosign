@@ -10,6 +10,7 @@ import ConsentForm from "@/components/surgery/ConsentForm";
 import CompletePage from "@/components/surgery/CompletePage";
 import ProgressIndicator from "@/components/surgery/ProgressIndicator";
 import ResumeProgressDialog from "@/components/surgery/ResumeProgressDialog";
+import SurgeryConsentChatbot from "@/components/surgery/SurgeryConsentChatbot";
 import { usePresentationNav } from "@/components/PresentationNav";
 import asanLogo from "@/assets/asan-logo.png";
 
@@ -401,6 +402,9 @@ const SurgeryConsent = () => {
           onResume={handleResumeProgress}
           onStartFresh={handleStartFresh}
         />
+
+        {/* AI Chatbot */}
+        <SurgeryConsentChatbot />
       </div>
     </>
   );
