@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { usePresentationNav } from "@/components/PresentationNav";
 import { ChevronDown, HelpCircle } from "lucide-react";
 import asanLogo from "@/assets/asan-logo.png";
 import {
@@ -40,11 +39,9 @@ const faqs = [
 
 const HeroSection = () => {
   const navigate = useNavigate();
-  const { setCurrentStepId } = usePresentationNav();
   const [faqOpen, setFaqOpen] = useState(false);
 
   const handleStartConsent = () => {
-    setCurrentStepId("identity");
     navigate("/surgery-consent");
   };
 
