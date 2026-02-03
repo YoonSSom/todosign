@@ -11,7 +11,6 @@ import CompletePage from "@/components/surgery/CompletePage";
 import ProgressIndicator from "@/components/surgery/ProgressIndicator";
 import ResumeProgressDialog from "@/components/surgery/ResumeProgressDialog";
 import SurgeryConsentChatbot from "@/components/surgery/SurgeryConsentChatbot";
-import { usePresentationNav } from "@/components/PresentationNav";
 import asanLogo from "@/assets/asan-logo.png";
 
 // Session and Progress utilities
@@ -59,8 +58,6 @@ const SurgeryConsent = () => {
   const [showResumeDialog, setShowResumeDialog] = useState(false);
   const [savedProgress, setSavedProgress] = useState<ProgressData | null>(null);
   const [pendingPatientInfo, setPendingPatientInfo] = useState<PatientInfo | null>(null);
-
-  const { currentStepId, setCurrentStepId } = usePresentationNav();
 
   // 현재 활성화된 ConsentStep 추적
   const [activeConsentStep, setActiveConsentStep] = useState<ConsentStep>('identity');
@@ -124,75 +121,9 @@ const SurgeryConsent = () => {
     }
   }, [patientInfo?.patientId]);
 
-  // Sync presentation nav with current step
-  useEffect(() => {
-    if (currentStepId === "identity" && currentStep !== "identity") {
-      setCurrentStep("identity");
-      setShowSurgeryInfoDialog(false);
-      setShowFaceRecognitionDialog(false);
-      setShowAvatarVoiceChatDialog(false);
-      setShowGameDialog(false);
-    } else if (currentStepId === "surgery-info") {
-      if (!patientInfo) {
-        setPatientInfo({ name: "홍길동", birthDate: new Date("1990-01-01"), phone: "010-1234-5678", isMinor: false });
-      }
-      setCurrentStep("explanation");
-      setShowSurgeryInfoDialog(true);
-      setShowFaceRecognitionDialog(false);
-      setShowAvatarVoiceChatDialog(false);
-      setShowGameDialog(false);
-    } else if (currentStepId === "face-recognition") {
-      if (!patientInfo) {
-        setPatientInfo({ name: "홍길동", birthDate: new Date("1990-01-01"), phone: "010-1234-5678", isMinor: false });
-      }
-      setCurrentStep("explanation");
-      setShowSurgeryInfoDialog(false);
-      setShowFaceRecognitionDialog(true);
-      setShowAvatarVoiceChatDialog(false);
-      setShowGameDialog(false);
-    } else if (currentStepId === "avatar-explanation") {
-      if (!patientInfo) {
-        setPatientInfo({ name: "홍길동", birthDate: new Date("1990-01-01"), phone: "010-1234-5678", isMinor: false });
-      }
-      setCurrentStep("explanation");
-      setShowSurgeryInfoDialog(false);
-      setShowFaceRecognitionDialog(false);
-      setShowAvatarVoiceChatDialog(true);
-      setShowGameDialog(false);
-    } else if (currentStepId === "game") {
-      if (!patientInfo) {
-        setPatientInfo({ name: "홍길동", birthDate: new Date("1990-01-01"), phone: "010-1234-5678", isMinor: false });
-      }
-      setCurrentStep("explanation");
-      setShowSurgeryInfoDialog(false);
-      setShowFaceRecognitionDialog(false);
-      setShowAvatarVoiceChatDialog(false);
-      setShowGameDialog(true);
-    } else if (currentStepId === "consent-form") {
-      if (!patientInfo) {
-        setPatientInfo({ name: "홍길동", birthDate: new Date("1990-01-01"), phone: "010-1234-5678", isMinor: false });
-      }
-      setCurrentStep("consent-form");
-      setShowSurgeryInfoDialog(false);
-      setShowFaceRecognitionDialog(false);
-      setShowAvatarVoiceChatDialog(false);
-      setShowGameDialog(false);
-    } else if (currentStepId === "complete") {
-      if (!patientInfo) {
-        setPatientInfo({ name: "홍길동", birthDate: new Date("1990-01-01"), phone: "010-1234-5678", isMinor: false });
-      }
-      setCurrentStep("complete");
-      setShowSurgeryInfoDialog(false);
-      setShowFaceRecognitionDialog(false);
-      setShowAvatarVoiceChatDialog(false);
-      setShowGameDialog(false);
-    }
-  }, [currentStepId]);
-
   // 저장된 단계로 이동
   const navigateToStep = useCallback((step: ConsentStep, info: PatientInfo) => {
     setPatientInfo(info);
-    setCurrentStepId(step);
     
     const pageStep = convertToPageStep(step);
     setCurrentStep(pageStep);
@@ -202,7 +133,7 @@ const SurgeryConsent = () => {
     setShowFaceRecognitionDialog(step === 'face-recognition');
     setShowAvatarVoiceChatDialog(step === 'avatar-explanation');
     setShowGameDialog(step === 'game');
-  }, [setCurrentStepId]);
+  }, []);
 
   const handleIdentityVerified = (info: PatientInfo) => {
     // 환자 ID 생성 (실제 서버에서는 서버가 반환)
@@ -240,7 +171,6 @@ const SurgeryConsent = () => {
       // 새로 시작
       setCurrentStep("explanation");
       setShowSurgeryInfoDialog(true);
-      setCurrentStepId("surgery-info");
       
       // 진행 상태 저장
       if (info.patientId) {
@@ -276,7 +206,6 @@ const SurgeryConsent = () => {
   const handleSurgeryInfoConfirmed = () => {
     setShowSurgeryInfoDialog(false);
     setShowFaceRecognitionDialog(true);
-    setCurrentStepId("face-recognition");
     setActiveConsentStep('face-recognition');
     saveCurrentProgress('face-recognition');
   };
@@ -284,7 +213,6 @@ const SurgeryConsent = () => {
   const handleFaceRecognitionComplete = () => {
     setShowFaceRecognitionDialog(false);
     setShowAvatarVoiceChatDialog(true);
-    setCurrentStepId("avatar-explanation");
     setActiveConsentStep('avatar-explanation');
     saveCurrentProgress('avatar-explanation');
   };
@@ -292,7 +220,6 @@ const SurgeryConsent = () => {
   const handleAvatarVideoComplete = () => {
     setShowAvatarVoiceChatDialog(false);
     setShowGameDialog(true);
-    setCurrentStepId("game");
     setActiveConsentStep('game');
     saveCurrentProgress('game');
   };
@@ -300,7 +227,6 @@ const SurgeryConsent = () => {
   const handleGameComplete = () => {
     setShowGameDialog(false);
     setCurrentStep("consent-form");
-    setCurrentStepId("consent-form");
     setActiveConsentStep('consent-form');
     saveCurrentProgress('consent-form');
   };
@@ -309,7 +235,6 @@ const SurgeryConsent = () => {
     setPatientSignature(patientSig);
     setGuardianSignature(guardianSig);
     setCurrentStep("complete");
-    setCurrentStepId("complete");
     setActiveConsentStep('complete');
     
     // 완료 시 진행 상태 및 세션 정리
